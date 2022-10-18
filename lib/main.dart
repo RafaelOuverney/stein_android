@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stein/venda.dart';
 
-void main() {
+void main() async {
   runApp(const Myapp());
 }
 
@@ -72,30 +72,6 @@ class _FirstPageState extends State<FirstPage> {
                 icon: const Icon(Icons.more_vert_rounded),
               ),
             ],
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              color: Colors.amber,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              color: Colors.amber,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              color: Colors.amber,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              color: Colors.amber,
-            ),
           ),
           SliverToBoxAdapter(
             child: Container(
