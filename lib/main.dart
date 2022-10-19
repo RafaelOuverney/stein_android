@@ -55,7 +55,7 @@ class _FirstPageState extends State<FirstPage> {
         ),
       ),
       body: CustomScrollView(
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar.large(
             pinned: false,
             snap: false,
@@ -72,12 +72,6 @@ class _FirstPageState extends State<FirstPage> {
                 icon: const Icon(Icons.more_vert_rounded),
               ),
             ],
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              color: Colors.amber,
-            ),
           ),
         ],
       ),

@@ -5,10 +5,9 @@ class FirstTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueAccent,
-      child: const Center(
-        child: Text('Tela 1'),
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Container(),
       ),
     );
   }

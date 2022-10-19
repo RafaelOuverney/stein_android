@@ -5,10 +5,12 @@ class SecondTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueAccent,
-      child: const Center(
-        child: Text('Tela 2'),
+    return SafeArea(
+      child: Container(
+        color: Colors.blueAccent,
+        child: const Center(
+          child: Text('Tela 2'),
+        ),
       ),
     );
   }
