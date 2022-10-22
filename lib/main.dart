@@ -1,7 +1,11 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:flutter/material.dart';
+import 'package:stein/requisicao.dart';
 import 'package:stein/venda.dart';
 
 void main() async {
+  await HttpRequest().reqHTTP('Mesa/');
   runApp(const Myapp());
 }
 
@@ -49,7 +53,9 @@ class _FirstPageState extends State<FirstPage> {
             ListTile(
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Sair'),
-              onTap: (() {}),
+              onTap: (() {
+                mesas.forEach((element) {});
+              }),
             )
           ],
         ),
@@ -57,7 +63,7 @@ class _FirstPageState extends State<FirstPage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
-            pinned: false,
+            pinned: true,
             snap: false,
             floating: false,
             title: const Text('Stein'),
@@ -72,6 +78,39 @@ class _FirstPageState extends State<FirstPage> {
                 icon: const Icon(Icons.more_vert_rounded),
               ),
             ],
+          ),
+          SliverGrid(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                Color? cor;
+                for (var mesa in mesasOcup) {
+                  if (mesas[index] == mesa) {
+                    cor = Colors.red[400];
+                    break;
+                  } else {
+                    cor = Colors.green[400];
+                  }
+                }
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: cor,
+                    child: Text('Mesa ${mesas[index]}'),
+                  ),
+                );
+              },
+              childCount: qtdMesas,
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.0,
+            ),
           ),
         ],
       ),
