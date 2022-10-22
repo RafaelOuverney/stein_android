@@ -3,6 +3,8 @@ import 'package:stein/tabs/first_page.dart';
 import 'package:stein/tabs/second_page.dart';
 import 'package:stein/tabs/thirth_page.dart';
 
+int i = 9;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -14,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
+        length: i,
         child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 100,
@@ -23,30 +25,20 @@ class _HomePageState extends State<HomePage> {
             centerTitle: true,
           ),
           body: Column(
-            children: const [
+            children: [
               TabBar(
+                isScrollable: true,
                 tabs: [
-                  Tab(
-                    icon: Icon(
-                      Icons.restaurant,
-                      color: Colors.black,
+                  for (int c = 0; c < i; c++)
+                    Tab(
+                      child: Text(
+                        '$c',
+                        style: const TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  Tab(
-                    icon: Icon(
-                      Icons.wine_bar_rounded,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Tab(
-                    icon: Icon(
-                      Icons.fastfood_rounded,
-                      color: Colors.black,
-                    ),
-                  ),
                 ],
               ),
-              Expanded(
+              const Expanded(
                 child: TabBarView(
                   children: [FirstTab(), SecondTab(), ThirthTab()],
                 ),
