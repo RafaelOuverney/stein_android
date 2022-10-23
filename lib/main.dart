@@ -84,6 +84,7 @@ class _FirstPageState extends State<FirstPage> {
                           MaterialPageRoute(
                               builder: (BuildContext context) => HomePage(
                                     nmrMesa: mesas.toString(),
+                                    ocup: '',
                                   )));
                     },
                     icon: const Icon(Icons.more_vert_rounded),
@@ -109,19 +110,42 @@ class _FirstPageState extends State<FirstPage> {
                     padding: const EdgeInsets.all(12.0),
                     child: InkWell(
                       onTap: (() {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => HomePage(
+                        if (texto == 'Ocupada') {
+                          final snackBar = SnackBar(
+                            content: const Text('Esta mesa está ocupada!'),
+                            action: SnackBarAction(
+                              label: 'Proceguir',
+                              textColor: Colors.lightBlue,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => HomePage(
                                       nmrMesa: mesas[index].toString(),
-                                    )));
+                                      ocup: texto,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) => HomePage(
+                                        nmrMesa: mesas[index].toString(),
+                                        ocup: texto,
+                                      )));
+                        }
                       }),
                       child: Container(
                         color: cor,
                         height: 150,
                         alignment: Alignment.center,
                         child: Text(
-                          "Mesa ${mesas[index]} $texto",
+                          "Mesa ${mesas[index]}",
                           style: const TextStyle(fontSize: 30),
                         ),
                       ),

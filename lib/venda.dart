@@ -4,12 +4,15 @@ import 'package:stein/tabs/first_page.dart';
 import 'package:stein/tabs/second_page.dart';
 import 'package:stein/tabs/thirth_page.dart';
 
+import 'main.dart';
+
 int i = 9;
 
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
+  String ocup = '';
 
-  HomePage({super.key, required this.nmrMesa});
+  HomePage({super.key, required this.nmrMesa, required this.ocup});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,6 +25,17 @@ class _HomePageState extends State<HomePage> {
         length: i,
         child: Scaffold(
           appBar: AppBar(
+            actions: [
+              Container(
+                padding: const EdgeInsets.all(25),
+                child: Center(
+                  child: Text(
+                    widget.ocup,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              )
+            ],
             toolbarHeight: 100,
             title: Text('Mesa: ${widget.nmrMesa}'),
             titleSpacing: 27,
