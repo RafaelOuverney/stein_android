@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
 import 'package:stein/tabs/second_page.dart';
 import 'package:stein/tabs/thirth_page.dart';
@@ -6,7 +7,9 @@ import 'package:stein/tabs/thirth_page.dart';
 int i = 9;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  String nmrMesa = '';
+
+  HomePage({super.key, required this.nmrMesa});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,7 +23,7 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 100,
-            title: const Text('Mesa: '),
+            title: Text('Mesa: ${widget.nmrMesa}'),
             titleSpacing: 27,
             centerTitle: true,
           ),
@@ -32,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                   for (int c = 0; c < i; c++)
                     Tab(
                       child: Text(
-                        '$c',
+                        '${c}',
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),
