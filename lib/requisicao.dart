@@ -26,7 +26,9 @@ class HttpRequest extends State<RequisicaoHttp> {
 
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
+      mesasOcup = [];
       var list = json.decode(response.body) as List;
+
       list.forEach((element) {
         mesas.add(element['numero']);
         if (element['ocupada']) {
@@ -35,7 +37,7 @@ class HttpRequest extends State<RequisicaoHttp> {
       });
       qtdMesas = mesas.length;
     } else {
-      print('object');
+      print('error');
     }
   }
 
@@ -44,3 +46,18 @@ class HttpRequest extends State<RequisicaoHttp> {
     return Container();
   }
 }
+
+
+
+
+
+
+
+
+// if (response.statusCode == 200 && site == 'Produtos/') {
+//       tipo = [];
+//       var list = json.decode(response.body) as List;
+
+//       list.forEach((element) {
+//         tipo.add(element['nome']);
+//       });
