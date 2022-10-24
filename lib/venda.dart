@@ -6,7 +6,7 @@ import 'package:stein/tabs/thirth_page.dart';
 
 import 'main.dart';
 
-int i = 9;
+int i = tipoTamanho.toInt();
 
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                   for (int c = 0; c < i; c++)
                     Tab(
                       child: Text(
-                        '${c}',
+                        '${tipo[c]}',
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),

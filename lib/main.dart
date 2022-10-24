@@ -117,6 +117,7 @@ class _FirstPageState extends State<FirstPage> {
                               label: 'Proceguir',
                               textColor: Colors.lightBlue,
                               onPressed: () {
+                                updateVenda();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -131,6 +132,7 @@ class _FirstPageState extends State<FirstPage> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
+                          updateVenda();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -202,4 +204,8 @@ class _FirstPageState extends State<FirstPage> {
 
 Future<void> updateRequest() async {
   await HttpRequest().reqHTTP('Mesa/');
+}
+
+Future<void> updateVenda() async {
+  await HttpRequest().reqHTTP('Produtos/');
 }

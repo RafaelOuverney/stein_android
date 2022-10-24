@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 var mesas = [];
 var mesasOcup = [];
 var qtdMesas = 0;
+var tipo = [];
+var tipoTamanho = 0;
 
 class RequisicaoHttp extends StatefulWidget {
   const RequisicaoHttp({super.key});
@@ -36,6 +38,18 @@ class HttpRequest extends State<RequisicaoHttp> {
         }
       });
       qtdMesas = mesas.length;
+    }
+    if (response.statusCode == 200 && site == 'Produtos/') {
+      tipo = [];
+
+      var tipos = json.decode(response.body) as List;
+
+      tipos.forEach((element) {
+        tipo.add(element['nome']);
+      });
+      print(tipo);
+      tipoTamanho = tipo.length;
+      print(tipoTamanho);
     } else {
       print('error');
     }
