@@ -6,7 +6,7 @@ import 'package:stein/tabs/thirth_page.dart';
 
 import 'main.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatefulWidget  {
   String nmrMesa = '';
   String ocup = '';
 
@@ -17,6 +17,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initSate(){
+    super.initState();
+
+    load();
+  }
+
+  Future load() async{
+    showDialog(context: context, builder: (context){
+      return const Center(child: CircularProgressIndicator(),);
+    });
+    setState(() {
+       updateVenda();
+    });
+     
+
+    Navigator.pop;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -39,15 +58,8 @@ class _HomePageState extends State<HomePage> {
             titleSpacing: 27,
             centerTitle: true,
           ),
-          body: RefreshIndicator(
-            onRefresh: () {
-              return Future.delayed(const Duration(seconds: 1), () {
-                setState(() {
-                  updateVenda();
-                });
-              });
-            },
-            child: Column(
+          body: tipo.isEmpty ? Center(child: CircularProgressIndicator()) : 
+          Column(
               children: [
                 TabBar(
                   isScrollable: true,
@@ -71,6 +83,6 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-        ));
+        );
   }
 }

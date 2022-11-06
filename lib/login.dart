@@ -8,7 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
 
 class login extends StatelessWidget {
-  const login({super.key});
+  bool isLoading = false;
+   login({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +18,11 @@ class login extends StatelessWidget {
       SizedBox(height: 200, child: Image.asset('lib/assets/logo.png',)),
       SizedBox(height: 125, child: Text('STEIN', style: GoogleFonts.josefinSans(textStyle: TextStyle(fontSize: 25)),),),
       SizedBox(height: 50, width: 150,  child: FloatingActionButton.extended(backgroundColor: Colors.grey[800], 
-      onPressed: (){
+      onPressed: ()async{
+       await updateRequest();
         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> const LoginPage()));
       }, 
-      label:  Text('Login', style: GoogleFonts.josefinSans(textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),), enableFeedback: true, hoverElevation: 25,))
+      label:   Text('Login', style: GoogleFonts.josefinSans(textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),), enableFeedback: true, hoverElevation: 25,))
     ]
     ,)
     ,)
@@ -68,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 80,),
             SizedBox(height: 50, width: 150,  child: FloatingActionButton.extended(backgroundColor: Colors.grey[800], 
         onPressed: (){
+           
           Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

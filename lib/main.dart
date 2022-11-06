@@ -7,7 +7,7 @@ import 'package:stein/requisicao.dart';
 import 'package:stein/venda.dart';
 
 void main() async {
-  await updateRequest();
+  
   runApp(const Myapp());
 }
 
@@ -18,7 +18,7 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const login(),
+      home:  login(),
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.deepPurple),
     );
   }
@@ -100,7 +100,7 @@ class _FirstPageState extends State<FirstPage> {
                  Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => const login(),
+        builder: (BuildContext context) =>  login(),
       ),
       (route) => false,
     );
@@ -110,11 +110,14 @@ class _FirstPageState extends State<FirstPage> {
             ],
           ),
         ),
-        body: RefreshIndicator(
-          onRefresh: () {
+        body:RefreshIndicator(
+          
+          onRefresh: () async {
+            await updateRequest();
             return Future.delayed(const Duration(seconds: 1), () {
-              setState(() {
-                updateRequest();
+                
+              setState(()  {
+                  updateRequest();
                 print('a');
               });
             });
@@ -196,7 +199,7 @@ class _FirstPageState extends State<FirstPage> {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: InkWell(
-                      onTap: (() {
+                      onTap: (() async{
                         if (texto == 'Ocupada') {
                           final snackBar = SnackBar(
                             content: const Text('Esta mesa está ocupada!'),
@@ -219,7 +222,7 @@ class _FirstPageState extends State<FirstPage> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
-                          updateVenda();
+                          
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -227,6 +230,7 @@ class _FirstPageState extends State<FirstPage> {
                                         nmrMesa: mesas[index].toString(),
                                         ocup: texto,
                                       )));
+                                      await updateVenda();
                         }
                       }),
                       child: Container(
@@ -250,6 +254,7 @@ class _FirstPageState extends State<FirstPage> {
 
 Future<void> updateRequest() async {
   await HttpRequest().reqHTTP('Mesa/');
+  await HttpRequest().reqHTTP('TiposDeProduto/');
 }
 
 Future<void> updateVenda() async {
