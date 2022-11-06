@@ -21,15 +21,14 @@ class RequisicaoHttp extends StatefulWidget {
 
 class HttpRequest extends State<RequisicaoHttp> {
   Future<void> reqHTTP(site) async {
-    var url = Uri.http(
-        '10.0.2.2:7272', 'djangorestframeworkapi/$site', {'q': '{http}'});
+    var url = Uri.http('10.0.2.2:8000', 'djangorestframeworkapi/$site');
 
     var response = await http.get(url);
 
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
       mesasOcup = [];
-      var list = json.decode(response.body) as List;
+      var list = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       list.forEach((element) {
         mesas.add(element['numero']);
@@ -38,20 +37,17 @@ class HttpRequest extends State<RequisicaoHttp> {
         }
       });
       qtdMesas = mesas.length;
-    }
-    if (response.statusCode == 200 && site == 'Produtos/') {
+    } else if (response.statusCode == 200 && site == 'TiposDeProduto/') {
       tipo = [];
 
-      var tipos = json.decode(response.body) as List;
+      var tipos = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       tipos.forEach((element) {
-        tipo.add(element['nome']);
+        tipo.add(element['tipo']);
       });
-      print(tipo);
       tipoTamanho = tipo.length;
-      print(tipoTamanho);
     } else {
-      print('error');
+      print('Tá errado porra');
     }
   }
 

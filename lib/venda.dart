@@ -6,8 +6,6 @@ import 'package:stein/tabs/thirth_page.dart';
 
 import 'main.dart';
 
-int i = tipoTamanho.toInt();
-
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
   String ocup = '';
@@ -22,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: i,
+        length: tipoTamanho,
         child: Scaffold(
           appBar: AppBar(
             actions: [
@@ -34,33 +32,44 @@ class _HomePageState extends State<HomePage> {
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
-              )
+              ),
             ],
             toolbarHeight: 100,
             title: Text('Mesa: ${widget.nmrMesa}'),
             titleSpacing: 27,
             centerTitle: true,
           ),
-          body: Column(
-            children: [
-              TabBar(
-                isScrollable: true,
-                tabs: [
-                  for (int c = 0; c < i; c++)
-                    Tab(
-                      child: Text(
-                        '${tipo[c]}',
-                        style: const TextStyle(color: Colors.black),
+          body: RefreshIndicator(
+            onRefresh: () {
+              return Future.delayed(const Duration(seconds: 1), () {
+                setState(() {
+                  updateVenda();
+                });
+              });
+            },
+            child: Column(
+              children: [
+                TabBar(
+                  isScrollable: true,
+                  tabs: [
+                    for (int c = 0; c < tipoTamanho; c++)
+                      Tab(
+                        child: Text(
+                          '${tipo[c]}',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-              const Expanded(
-                child: TabBarView(
-                  children: [FirstTab(), SecondTab(), ThirthTab()],
+                  ],
                 ),
-              )
-            ],
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      for (int t = 0; t < tipoTamanho; t++) FirstTab()
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }

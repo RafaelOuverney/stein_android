@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/venda.dart';
 
@@ -16,7 +18,7 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const FirstPage(),
+      home: const login(),
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.deepPurple),
     );
   }
@@ -51,12 +53,60 @@ class _FirstPageState extends State<FirstPage> {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.exit_to_app),
-                title: const Text('Sair'),
+                title:  Text('  Comandas' , style: GoogleFonts.inter()),
                 onTap: (() {
                   mesas.forEach((element) {});
                 }),
-              )
+              ),ListTile(
+                title:  Text('  Mesas Ocupadas' , style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                title:  Text('  Meus Dados',  style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                title:  Text('  Configurações',  style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                title:  Text('  Sobre' , style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                title:  Text('  Ajuda', style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                title:  Text('  Trocar Funcionário' , style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {});
+                }),
+              ),
+              ListTile(
+                
+                title:  Text('  Sair', style: GoogleFonts.inter()),
+                onTap: (() {
+                 Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => const login(),
+      ),
+      (route) => false,
+    );
+                }),
+              ),
+              
             ],
           ),
         ),
@@ -65,7 +115,7 @@ class _FirstPageState extends State<FirstPage> {
             return Future.delayed(const Duration(seconds: 1), () {
               setState(() {
                 updateRequest();
-                print('tipo');
+                print('a');
               });
             });
           },
@@ -75,17 +125,54 @@ class _FirstPageState extends State<FirstPage> {
                 pinned: true,
                 snap: false,
                 floating: false,
-                title: const Text('Stein'),
+                title:  Text('STEIN', style: GoogleFonts.josefinSans()),
                 actions: [
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage(
-                                    nmrMesa: mesas.toString(),
-                                    ocup: '',
-                                  )));
+                      showModalBottomSheet(context: context, builder: (context){return SizedBox(
+                        height: 300,
+                        child: Column(children: [  const SizedBox(height: 75,  child: Center(child: Text('Menu', style: TextStyle(fontSize: 25), textAlign: TextAlign.left,),
+                        ),
+                        ),
+                         const Divider(
+                          thickness: 1.5,
+                        ), 
+                        Expanded(child: ListView(
+  children: <Widget>[
+    const SizedBox(
+        height: 15,
+      ),
+    InkWell(
+      onTap: () {
+        
+      },
+      onLongPress: () {
+        
+      },
+      child: const SizedBox(
+        height: 85,
+        
+        child: Center(child: Text('Comandas', style: TextStyle(fontSize: 20))),
+      ),
+    ),
+    
+    InkWell(
+      onTap: () {
+        
+      },
+      child: const SizedBox(
+        height: 85,
+    
+        child: Center(child: Text('Sair', style: TextStyle(fontSize: 20),)),
+      ),
+    ),
+    
+   
+  ],
+))
+                        ],
+                        ),
+                      );});
                     },
                     icon: const Icon(Icons.more_vert_rounded),
                   ),
@@ -114,7 +201,7 @@ class _FirstPageState extends State<FirstPage> {
                           final snackBar = SnackBar(
                             content: const Text('Esta mesa está ocupada!'),
                             action: SnackBarAction(
-                              label: 'Proceguir',
+                              label: 'Prosseguir',
                               textColor: Colors.lightBlue,
                               onPressed: () {
                                 updateVenda();
@@ -161,51 +248,10 @@ class _FirstPageState extends State<FirstPage> {
   }
 }
 
-// class GridBuilder extends StatelessWidget {
-//   const GridBuilder({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverGrid(
-//       delegate: SliverChildBuilderDelegate(
-//         (context, index) {
-//           Color? cor;
-//           for (var mesa in mesasOcup) {
-//             if (mesas[index] == mesa) {
-//               cor = Colors.red[400];
-//               break;
-//             } else {
-//               cor = Colors.green[400];
-//             }
-//           }
-//           return Container(
-//             decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(25),
-//             ),
-//             padding: const EdgeInsets.all(5),
-//             child: Container(
-//               alignment: Alignment.center,
-//               color: cor,
-//               child: Text('Mesa ${mesas[index]}'),
-//             ),
-//           );
-//         },
-//         childCount: qtdMesas,
-//       ),
-//       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//         crossAxisCount: 2,
-//         mainAxisSpacing: 10,
-//         crossAxisSpacing: 10,
-//         childAspectRatio: 2.0,
-//       ),
-//     );
-//   }
-// }
-
 Future<void> updateRequest() async {
   await HttpRequest().reqHTTP('Mesa/');
 }
 
 Future<void> updateVenda() async {
-  await HttpRequest().reqHTTP('Produtos/');
+  await HttpRequest().reqHTTP('TiposDeProduto/');
 }
