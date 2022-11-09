@@ -11,6 +11,8 @@ var mesasOcup = [];
 var qtdMesas = 0;
 var tipo = [];
 var tipoTamanho = 0;
+var authUsername = [];
+var mesaComandaId = [];
 
 class RequisicaoHttp extends StatefulWidget {
   const RequisicaoHttp({super.key});
@@ -46,8 +48,25 @@ class HttpRequest extends State<RequisicaoHttp> {
         tipo.add(element['tipo']);
       });
       tipoTamanho = tipo.length;
+    } else if (response.statusCode == 200 && site == 'Users/') {
+      authUsername = [];
+
+      var username = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+      username.forEach((element) {
+        authUsername.add(element['username']);
+      });
+    } else if (response.statusCode == 200 && site == 'Comanda/') {
+      mesaComandaId = [];
+
+      var mesaid = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+      mesaid.forEach((element) {
+        mesaComandaId.add(element['nmrMesa']);
+        print(mesaComandaId);
+      });
     } else {
-      print('Tá errado porra');
+      throw (Exception);
     }
   }
 

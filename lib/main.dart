@@ -2,12 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stein/comandas.dart';
 import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
+import 'package:stein/sobre.dart';
 import 'package:stein/venda.dart';
 
+var nominho = '';
+
 void main() async {
-  
   runApp(const Myapp());
 }
 
@@ -18,7 +21,7 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  login(),
+      home: Login(),
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.deepPurple),
     );
   }
@@ -45,80 +48,126 @@ class _FirstPageState extends State<FirstPage> {
                   Navigator.pop(context);
                 },
               ),
-              const UserAccountsDrawerHeader(
-                accountName: Text('User'),
-                accountEmail: Text('Email'),
-                currentAccountPicture: CircleAvatar(
+              UserAccountsDrawerHeader(
+                accountName: Text(nominho),
+                accountEmail: const Text('Email'),
+                currentAccountPicture: const CircleAvatar(
                   child: Icon(Icons.person),
                 ),
               ),
               ListTile(
-                title:  Text('  Comandas' , style: GoogleFonts.inter()),
-                onTap: (() {
-                  mesas.forEach((element) {});
-                }),
-              ),ListTile(
-                title:  Text('  Mesas Ocupadas' , style: GoogleFonts.inter()),
+                title: Text('  Comandas', style: GoogleFonts.inter()),
                 onTap: (() {
                   mesas.forEach((element) {});
                 }),
               ),
               ListTile(
-                title:  Text('  Meus Dados',  style: GoogleFonts.inter()),
+                title: Text('  Mesas Ocupadas', style: GoogleFonts.inter()),
+                onTap: (() {
+                  mesas.forEach((element) {
+                    Navigator.pop(context);
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (context) {
+                        return SizedBox(
+                          height: 500,
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 70,
+                                child: Center(
+                                  child: Text(
+                                    'Mesas Ocupadas',
+                                    textAlign: TextAlign.center,
+                                    textScaleFactor: 1.5,
+                                  ),
+                                ),
+                              ),
+                              const Divider(
+                                thickness: 1,
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: mesasOcup.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Comandas(
+                                              nummesa:
+                                                  mesasOcup[index].toString(),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: ListTile(
+                                        title: Text('Mesa ${mesasOcup[index]}'),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  });
+                }),
+              ),
+              ListTile(
+                title: Text('  Meus Dados', style: GoogleFonts.inter()),
                 onTap: (() {
                   mesas.forEach((element) {});
                 }),
               ),
               ListTile(
-                title:  Text('  Configurações',  style: GoogleFonts.inter()),
+                title: Text('  Sobre', style: GoogleFonts.inter()),
                 onTap: (() {
-                  mesas.forEach((element) {});
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => Sobre()));
                 }),
               ),
               ListTile(
-                title:  Text('  Sobre' , style: GoogleFonts.inter()),
+                title: Text('  Trocar Funcionário', style: GoogleFonts.inter()),
                 onTap: (() {
-                  mesas.forEach((element) {});
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const LoginPage(),
+                    ),
+                    (route) => false,
+                  );
                 }),
               ),
               ListTile(
-                title:  Text('  Ajuda', style: GoogleFonts.inter()),
+                title: Text('  Sair', style: GoogleFonts.inter()),
                 onTap: (() {
-                  mesas.forEach((element) {});
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Login(),
+                    ),
+                    (route) => false,
+                  );
                 }),
               ),
-              ListTile(
-                title:  Text('  Trocar Funcionário' , style: GoogleFonts.inter()),
-                onTap: (() {
-                  mesas.forEach((element) {});
-                }),
-              ),
-              ListTile(
-                
-                title:  Text('  Sair', style: GoogleFonts.inter()),
-                onTap: (() {
-                 Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) =>  login(),
-      ),
-      (route) => false,
-    );
-                }),
-              ),
-              
             ],
           ),
         ),
-        body:RefreshIndicator(
-          
+        body: RefreshIndicator(
           onRefresh: () async {
             await updateRequest();
-            return Future.delayed(const Duration(seconds: 1), () {
-                
-              setState(()  {
-                  updateRequest();
-                print('a');
+            return Future.delayed(const Duration(seconds: 2), () {
+              setState(() {
+                updateRequest();
               });
             });
           },
@@ -128,54 +177,73 @@ class _FirstPageState extends State<FirstPage> {
                 pinned: true,
                 snap: false,
                 floating: false,
-                title:  Text('STEIN', style: GoogleFonts.josefinSans()),
+                expandedHeight: 250,
+                title: Text('STEIN', style: GoogleFonts.josefinSans()),
                 actions: [
                   IconButton(
                     onPressed: () {
-                      showModalBottomSheet(context: context, builder: (context){return SizedBox(
-                        height: 300,
-                        child: Column(children: [  const SizedBox(height: 75,  child: Center(child: Text('Menu', style: TextStyle(fontSize: 25), textAlign: TextAlign.left,),
-                        ),
-                        ),
-                         const Divider(
-                          thickness: 1.5,
-                        ), 
-                        Expanded(child: ListView(
-  children: <Widget>[
-    const SizedBox(
-        height: 15,
-      ),
-    InkWell(
-      onTap: () {
-        
-      },
-      onLongPress: () {
-        
-      },
-      child: const SizedBox(
-        height: 85,
-        
-        child: Center(child: Text('Comandas', style: TextStyle(fontSize: 20))),
-      ),
-    ),
-    
-    InkWell(
-      onTap: () {
-        
-      },
-      child: const SizedBox(
-        height: 85,
-    
-        child: Center(child: Text('Sair', style: TextStyle(fontSize: 20),)),
-      ),
-    ),
-    
-   
-  ],
-))
-                        ],
-                        ),
-                      );});
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SizedBox(
+                              height: 300,
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 75,
+                                    child: Center(
+                                      child: Text(
+                                        'Menu',
+                                        style: TextStyle(fontSize: 25),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                  const Divider(
+                                    thickness: 1.5,
+                                  ),
+                                  Expanded(
+                                      child: ListView(
+                                    children: <Widget>[
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        onLongPress: () {},
+                                        child: const SizedBox(
+                                          height: 85,
+                                          child: Center(
+                                              child: Text('Comandas',
+                                                  style:
+                                                      TextStyle(fontSize: 20))),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Login(),
+                    ),
+                    (route) => false,
+                  );
+                                        },
+                                        child: const SizedBox(
+                                          height: 85,
+                                          child: Center(
+                                              child: Text(
+                                            'Sair',
+                                            style: TextStyle(fontSize: 20),
+                                          )),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                                ],
+                              ),
+                            );
+                          });
                     },
                     icon: const Icon(Icons.more_vert_rounded),
                   ),
@@ -199,7 +267,7 @@ class _FirstPageState extends State<FirstPage> {
                   return Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: InkWell(
-                      onTap: (() async{
+                      onTap: (() async {
                         if (texto == 'Ocupada') {
                           final snackBar = SnackBar(
                             content: const Text('Esta mesa está ocupada!'),
@@ -207,13 +275,12 @@ class _FirstPageState extends State<FirstPage> {
                               label: 'Prosseguir',
                               textColor: Colors.lightBlue,
                               onPressed: () {
-                                updateVenda();
+                                updateComanda();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (BuildContext context) => HomePage(
-                                      nmrMesa: mesas[index].toString(),
-                                      ocup: texto,
+                                    builder: (BuildContext context) => Comandas(
+                                      nummesa: mesas[index].toString(),
                                     ),
                                   ),
                                 );
@@ -222,7 +289,6 @@ class _FirstPageState extends State<FirstPage> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
-                          
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -230,7 +296,7 @@ class _FirstPageState extends State<FirstPage> {
                                         nmrMesa: mesas[index].toString(),
                                         ocup: texto,
                                       )));
-                                      await updateVenda();
+                          await updateVenda();
                         }
                       }),
                       child: Container(
@@ -259,4 +325,12 @@ Future<void> updateRequest() async {
 
 Future<void> updateVenda() async {
   await HttpRequest().reqHTTP('TiposDeProduto/');
+}
+
+Future<void> updateFuncionario() async {
+  await HttpRequest().reqHTTP('Users/');
+}
+
+Future<void> updateComanda() async {
+  await HttpRequest().reqHTTP('Comanda/');
 }
