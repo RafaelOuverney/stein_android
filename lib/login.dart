@@ -68,6 +68,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isObscure = true;
   var valida = '';
   final formkey = GlobalKey<FormState>();
   @override
@@ -125,12 +126,21 @@ class _LoginPageState extends State<LoginPage> {
                       height: 100,
                       width: 350,
                       child: TextFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('Senha'),
-                          prefixIcon: Icon(Icons.lock),
-                          hintText: 'Insira sua senha',
-                        ),
+                        obscureText: _isObscure,
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            label: const Text('Senha'),
+                            prefixIcon: const Icon(Icons.lock),
+                            hintText: 'Insira sua senha',
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
+                                icon: Icon(_isObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off))),
                         validator: (value) {
                           if (value!.isEmpty || value == null) {
                             return 'Senha é necessário';
