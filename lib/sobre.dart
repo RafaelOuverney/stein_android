@@ -30,7 +30,10 @@ class _SobreState extends State<Sobre> {
                       const EdgeInsets.only(right: 25, top: 25, bottom: 10),
                   child: Text(
                     '  Objetivo:',
-                    style: GoogleFonts.josefinSans(fontSize: 22, textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.josefinSans(
+                        fontSize: 22,
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -54,7 +57,10 @@ class _SobreState extends State<Sobre> {
                       const EdgeInsets.only(right: 25, top: 25, bottom: 10),
                   child: Text(
                     '  Linguagens Usadas:',
-                    style: GoogleFonts.josefinSans(fontSize: 22, textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.josefinSans(
+                        fontSize: 22,
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -78,7 +84,10 @@ class _SobreState extends State<Sobre> {
                       const EdgeInsets.only(right: 25, top: 25, bottom: 10),
                   child: Text(
                     '  Prototipação:',
-                    style: GoogleFonts.josefinSans(fontSize: 22, textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.josefinSans(
+                        fontSize: 22,
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -101,8 +110,11 @@ class _SobreState extends State<Sobre> {
                   padding:
                       const EdgeInsets.only(right: 25, top: 25, bottom: 10),
                   child: Text(
-                    '  Agradecimentos:', 
-                    style: GoogleFonts.josefinSans(fontSize: 22, textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                    '  Agradecimentos:',
+                    style: GoogleFonts.josefinSans(
+                        fontSize: 22,
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -126,7 +138,10 @@ class _SobreState extends State<Sobre> {
                       const EdgeInsets.only(right: 25, top: 25, bottom: 10),
                   child: Text(
                     '  Projeto STEIN:',
-                    style: GoogleFonts.josefinSans(fontSize: 22, textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.josefinSans(
+                        fontSize: 22,
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
@@ -160,7 +175,6 @@ class _SobreState extends State<Sobre> {
                       textStyle: const TextStyle(fontSize: 38)),
                 ),
               ),
-             
             ],
           ),
         ));

@@ -222,12 +222,13 @@ class _FirstPageState extends State<FirstPage> {
                                       InkWell(
                                         onTap: () {
                                           Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Login(),
-                    ),
-                    (route) => false,
-                  );
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Login(),
+                                            ),
+                                            (route) => false,
+                                          );
                                         },
                                         child: const SizedBox(
                                           height: 85,
