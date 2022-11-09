@@ -16,7 +16,7 @@ class Login extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(
-            height: 200,
+            height: 150,
           ),
           SizedBox(
               height: 200,
@@ -138,9 +138,14 @@ class _LoginPageState extends State<LoginPage> {
                                     _isObscure = !_isObscure;
                                   });
                                 },
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off))),
+                                icon: Icon(
+                                  _isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: _isObscure
+                                      ? Colors.grey
+                                      : Colors.deepPurple,
+                                ))),
                         validator: (value) {
                           if (value!.isEmpty || value == null) {
                             return 'Senha é necessário';

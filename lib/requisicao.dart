@@ -14,6 +14,9 @@ var tipoTamanho = 0;
 var authUsername = [];
 var mesaComandaId = [];
 
+String user = 'admin ';
+String password = 'admim';
+
 class RequisicaoHttp extends StatefulWidget {
   const RequisicaoHttp({super.key});
 
@@ -22,8 +25,12 @@ class RequisicaoHttp extends StatefulWidget {
 }
 
 class HttpRequest extends State<RequisicaoHttp> {
+  String basicAuth = base64.encode(utf8.encode('$user:$password'));
   Future<void> reqHTTP(site) async {
-    var url = Uri.http('10.0.2.2:8000', 'djangorestframeworkapi/$site');
+    var url = Uri.http(
+      'localhost:7272',
+      'djangorestframeworkapi/$site',
+    );
 
     var response = await http.get(url);
 
