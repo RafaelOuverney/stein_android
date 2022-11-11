@@ -13,6 +13,7 @@ var tipo = [];
 var tipoTamanho = 0;
 var authUsername = [];
 var mesaComandaId = [];
+var req = '10.0.2.2:8000';
 
 class RequisicaoHttp extends StatefulWidget {
   const RequisicaoHttp({super.key});
@@ -23,7 +24,7 @@ class RequisicaoHttp extends StatefulWidget {
 
 class HttpRequest extends State<RequisicaoHttp> {
   Future<void> reqHTTP(site) async {
-    var url = Uri.http('10.0.2.2:8000', 'djangorestframeworkapi/$site');
+    var url = Uri.http('$req', 'djangorestframeworkapi/$site');
 
     var response = await http.get(url);
 
