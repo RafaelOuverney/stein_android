@@ -255,14 +255,18 @@ class _FirstPageState extends State<FirstPage> {
                     (BuildContext context, int index) {
                   Color? cor;
                   var texto = '';
-                  for (var mesa in mesasOcup) {
-                    if (mesas[index] == mesa) {
-                      cor = Colors.red[400];
-                      texto = 'Ocupada';
-                      break;
-                    } else {
-                      cor = Colors.green[400];
+                  if (mesasOcup.isNotEmpty) {
+                    for (var mesa in mesasOcup) {
+                      if (mesas[index] == mesa) {
+                        cor = Colors.red[400];
+                        texto = 'Ocupada';
+                        break;
+                      } else {
+                        cor = Colors.green[400];
+                      }
                     }
+                  } else {
+                    cor = Colors.green[400];
                   }
 
                   return Padding(

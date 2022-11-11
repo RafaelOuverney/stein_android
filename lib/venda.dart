@@ -9,8 +9,13 @@ import 'main.dart';
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
   String ocup = '';
+  String prodId = '';
 
-  HomePage({super.key, required this.nmrMesa, required this.ocup});
+  HomePage({
+    super.key,
+    required this.nmrMesa,
+    required this.ocup,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
