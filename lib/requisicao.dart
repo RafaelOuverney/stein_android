@@ -14,6 +14,21 @@ var tipoTamanho = 0;
 var authUsername = [];
 var mesaComandaId = [];
 var req = '10.0.2.2:8000';
+var authToken = '';
+
+class Token extends StatefulWidget {
+  const Token({super.key});
+
+  @override
+  State<Token> createState() => TokenRequest();
+}
+
+class TokenRequest extends State<Token> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 class RequisicaoHttp extends StatefulWidget {
   const RequisicaoHttp({super.key});
@@ -24,9 +39,11 @@ class RequisicaoHttp extends StatefulWidget {
 
 class HttpRequest extends State<RequisicaoHttp> {
   Future<void> reqHTTP(site) async {
-    var url = Uri.http('$req', 'djangorestframeworkapi/$site');
+    var url = Uri.http(req, 'djangorestframeworkapi/$site');
 
-    var response = await http.get(url);
+    var response = await http.get(url, headers: {
+      'Authorization': 'Token c96b2f3f16449dd129e18ff1a327c73528634c48 '
+    });
 
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
@@ -67,7 +84,7 @@ class HttpRequest extends State<RequisicaoHttp> {
         print(mesaComandaId);
       });
     } else {
-      throw (Exception);
+      print('error');
     }
   }
 
@@ -76,18 +93,3 @@ class HttpRequest extends State<RequisicaoHttp> {
     return Container();
   }
 }
-
-
-
-
-
-
-
-
-// if (response.statusCode == 200 && site == 'Produtos/') {
-//       tipo = [];
-//       var list = json.decode(response.body) as List;
-
-//       list.forEach((element) {
-//         tipo.add(element['nome']);
-//       });

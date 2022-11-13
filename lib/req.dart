@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 
@@ -17,42 +15,88 @@ class _RqState extends State<Rq> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey[100],
+        title: const Text('Não altere'),
         actions: [
           IconButton(
               onPressed: (() {
                 if (formkey.currentState!.validate()) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Login(),
+                  final snackBar = SnackBar(
+                    content: const Text('Essa ação não podera ser revertida'),
+                    action: SnackBarAction(
+                      label: 'Continuar',
+                      textColor: Colors.lightBlue,
+                      onPressed: () {
+                        final snackBar = SnackBar(
+                          content: const Text(
+                              'A aplicação pode deixar de funcionar'),
+                          action: SnackBarAction(
+                            label: 'Ok',
+                            textColor: Colors.redAccent,
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => Login(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      },
                     ),
-                    (route) => false,
                   );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               }),
               icon: Icon(Icons.save))
         ],
       ),
       body: SafeArea(
-        child: Form(
-          key: formkey,
-          child: Center(
-            child: TextFormField(
-              decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  label: const Text('Ip RestFramework'),
-                  hintText: req),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  req = value;
-                } else {
-                  req = value;
-                }
-              },
+        child: Column(children: [
+          const SizedBox(
+            child: Padding(
+              padding: EdgeInsets.only(left: 25, right: 25, top: 25),
+              child: Center(
+                child: Text(
+                  'Alterações nessa tela podem comprometer o funcionamento da aplicação',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          SizedBox(
+            height: 100,
+          ),
+          Form(
+            key: formkey,
+            child: Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width - 50,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      label: const Text('Ip RestFramework'),
+                      hintText: req),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Informe um endereço';
+                    } else {
+                      req = value;
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
 }
+
+

@@ -10,21 +10,59 @@ class Login extends StatelessWidget {
   bool isLoading = false;
   Login({super.key});
 
+  var textinho = Text(
+    'Login',
+    style: GoogleFonts.josefinSans(
+        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+  );
+
+  var carregamento = const CircularProgressIndicator();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => const Rq()));
-                },
-                icon: const Icon(Icons.get_app_rounded))
-          ],
-        ),
+            automaticallyImplyLeading: true,
+            backgroundColor: Colors.grey[100],
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Expanded(
+                          child: AlertDialog(
+                            title: const Text(
+                              'Alerta',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            content: const Text(
+                                'Essa é uma janela de configuração de conexão com o servidor, alterações podem ocasionar no não funcionamento da aplicação.'),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('CANCELAR'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const Rq()));
+                                },
+                                child: const Text('PROSSEGUIR'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.settings))
+            ]),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -59,12 +97,7 @@ class Login extends StatelessWidget {
                                 builder: (BuildContext context) =>
                                     const LoginPage()));
                       },
-                      label: Text(
-                        'Login',
-                        style: GoogleFonts.josefinSans(
-                            textStyle: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                      ),
+                      label: isLoading == true ? carregamento : textinho,
                       enableFeedback: true,
                       hoverElevation: 25,
                     ))

@@ -7,10 +7,19 @@ import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
 import 'package:stein/venda.dart';
+import 'package:http/http.dart' as http;
 
 var nominho = '';
 
 void main() async {
+  Future<void> tokenReq() async {
+    var response = await http.post(Uri.parse(
+        'localhost:8000/djangorestframeworkapi/verifica-token/ username="admin" password="admin"'));
+    print(response.body);
+  }
+
+  tokenReq();
+
   runApp(const Myapp());
 }
 
