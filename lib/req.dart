@@ -69,8 +69,14 @@ class _RqState extends State<Rq> {
               ),
             ),
           ),
-          SizedBox(
-            height: 100,
+          const SizedBox(
+            height: 75,
+          ),
+          const SizedBox(
+            height: 25,
+            child: Center(
+              child: Text('Endereço RestFramework Ex: 10.0.2.2:8000'),
+            ),
           ),
           Form(
             key: formkey,
@@ -98,5 +104,3 @@ class _RqState extends State<Rq> {
     );
   }
 }
-
-

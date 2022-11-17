@@ -15,6 +15,9 @@ var authUsername = [];
 var mesaComandaId = [];
 var req = '10.0.2.2:8000';
 var authToken = '';
+var tokenzinho = 'invalido';
+var authPassword = '';
+var authUsuario = '';
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -41,9 +44,8 @@ class HttpRequest extends State<RequisicaoHttp> {
   Future<void> reqHTTP(site) async {
     var url = Uri.http(req, 'djangorestframeworkapi/$site');
 
-    var response = await http.get(url, headers: {
-      'Authorization': 'Token c96b2f3f16449dd129e18ff1a327c73528634c48 '
-    });
+    var response =
+        await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
@@ -80,7 +82,7 @@ class HttpRequest extends State<RequisicaoHttp> {
       var mesaid = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       mesaid.forEach((element) {
-        mesaComandaId.add(element['nmrMesa']);
+        mesaComandaId.add(element['id']);
         print(mesaComandaId);
       });
     } else {
@@ -91,5 +93,26 @@ class HttpRequest extends State<RequisicaoHttp> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+Future chamaToken(usuario, senha) async {
+  tokenzinho = 'invalido';
+  print(usuario);
+  print(senha);
+  http.Response resposta = await http.post(
+    Uri.http(req, '/djangorestframeworkapi/verifica-token/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(
+        <String, String>{'username': '$usuario', 'password': '$senha'}),
+  );
+
+  if (resposta.statusCode == 200) {
+    tokenzinho = json.decode(resposta.body)['token'];
+    return true;
+  } else {
+    return false;
   }
 }

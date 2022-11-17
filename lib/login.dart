@@ -6,6 +6,8 @@ import 'package:stein/main.dart';
 import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 
+var senhinha = '';
+
 class Login extends StatelessWidget {
   bool isLoading = false;
   Login({super.key});
@@ -25,6 +27,7 @@ class Login extends StatelessWidget {
             automaticallyImplyLeading: true,
             backgroundColor: Colors.grey[100],
             actions: [
+              IconButton(onPressed: () async {}, icon: const Icon(Icons.add)),
               IconButton(
                   onPressed: () {
                     showDialog(
@@ -47,6 +50,7 @@ class Login extends StatelessWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  Navigator.pop(context);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -89,8 +93,6 @@ class Login extends StatelessWidget {
                     child: FloatingActionButton.extended(
                       backgroundColor: Colors.grey[800],
                       onPressed: () async {
-                        await updateRequest();
-                        await updateFuncionario();
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -162,11 +164,8 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) {
                           if (value!.isEmpty || value == null) {
                             return 'Usuario é necessário';
-                          } else if (authUsername.contains(value) == false) {
-                            return 'Usuário não encontrado';
                           }
-                          valida = value;
-                          nominho = valida;
+                          nominho = value;
                         },
                       ),
                     ),
@@ -192,12 +191,8 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) {
                           if (value!.isEmpty || value == null) {
                             return 'Senha é necessário';
-                          } else if (authUsername.contains(value) == false) {
-                            return 'Senha incorreta';
-                          } else if (valida != value) {
-                            return 'Usuário ou senha Incorretos';
                           }
-                          return null;
+                          senhinha = value;
                         },
                       ),
                     ),
@@ -209,16 +204,22 @@ class _LoginPageState extends State<LoginPage> {
                       width: 150,
                       child: FloatingActionButton.extended(
                         backgroundColor: Colors.grey[800],
-                        onPressed: () {
+                        onPressed: () async {
                           if (formkey.currentState!.validate()) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const FirstPage(),
-                              ),
-                              (route) => false,
-                            );
+                            await chamaToken(nominho, senhinha);
+
+                            if (tokenzinho != 'invalido') {
+                              await updateRequest();
+                              await updateFuncionario();
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const FirstPage(),
+                                ),
+                                (route) => false,
+                              );
+                            }
                           }
                         },
                         label: Text(
