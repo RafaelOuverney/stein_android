@@ -15,7 +15,7 @@ class _ComandasState extends State<Comandas> {
       appBar: AppBar(
         toolbarHeight: 125,
         title: Text(
-          'Pedidos mesa: ${widget.nummesa}',
+          'Comanda mesa: ${widget.nummesa}',
           style: const TextStyle(color: Colors.black),
         ),
       ),

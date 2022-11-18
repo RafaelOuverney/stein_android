@@ -13,7 +13,7 @@ var tipo = [];
 var tipoTamanho = 0;
 var authUsername = [];
 var mesaComandaId = [];
-var req = '10.0.2.2:8000';
+var req = 'localhost:7272';
 var authToken = '';
 var tokenzinho = 'invalido';
 var authPassword = '';
@@ -108,11 +108,11 @@ Future chamaToken(usuario, senha) async {
     body: jsonEncode(
         <String, String>{'username': '$usuario', 'password': '$senha'}),
   );
-
   if (resposta.statusCode == 200) {
     tokenzinho = json.decode(resposta.body)['token'];
     return true;
   } else {
+    tokenzinho = 'invalido';
     return false;
   }
 }

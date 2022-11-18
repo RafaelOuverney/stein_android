@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
@@ -219,6 +221,33 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 (route) => false,
                               );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Expanded(
+                                    child: AlertDialog(
+                                      title: const Text(
+                                        'Erro',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      content: const Text(
+                                          'Usuário ou senha incorretos.'),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Ok'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                              Timer(const Duration(seconds: 5), () {
+                                Navigator.pop(context);
+                              });
                             }
                           }
                         },

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/comandas.dart';
@@ -7,12 +8,14 @@ import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
 import 'package:stein/venda.dart';
-import 'package:http/http.dart' as http;
 
 var nominho = '';
 
 void main() async {
   runApp(const Myapp());
+  Timer(const Duration(seconds: 15), () {
+    refreshRequest();
+  });
 }
 
 class Myapp extends StatelessWidget {
@@ -36,6 +39,7 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,6 +187,64 @@ class _FirstPageState extends State<FirstPage> {
                 actions: [
                   IconButton(
                     onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: 500,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 70,
+                                  child: Center(
+                                    child: Text(
+                                      'Mesas Ocupadas',
+                                      textAlign: TextAlign.center,
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  ),
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: mesasOcup.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Comandas(
+                                                nummesa:
+                                                    mesasOcup[index].toString(),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: ListTile(
+                                          title: Center(
+                                              child: Text(
+                                                  'Mesa ${mesasOcup[index]}')),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.table_restaurant),
+                    tooltip: 'Mesas Ocupadas',
+                  ),
+                  IconButton(
+                    onPressed: () {
                       showModalBottomSheet(
                           context: context,
                           builder: (context) {
@@ -251,73 +313,162 @@ class _FirstPageState extends State<FirstPage> {
                   ),
                 ],
               ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  Color? cor;
-                  var texto = '';
-                  if (mesasOcup.isNotEmpty) {
-                    for (var mesa in mesasOcup) {
-                      if (mesas[index] == mesa) {
-                        cor = Colors.red[400];
-                        texto = 'Ocupada';
-                        break;
-                      } else {
-                        cor = Colors.green[400];
-                      }
-                    }
-                  } else {
-                    cor = Colors.green[400];
-                  }
+              MediaQuery.of(context).size.width < 910
+                  ? SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        Color? cor;
+                        var texto = '';
+                        if (mesasOcup.isNotEmpty) {
+                          for (var mesa in mesasOcup) {
+                            if (mesas[index] == mesa) {
+                              cor = Colors.red[400];
+                              texto = 'Ocupada';
+                              break;
+                            } else {
+                              cor = Colors.green[400];
+                            }
+                          }
+                        } else {
+                          cor = Colors.green[400];
+                        }
 
-                  return Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: InkWell(
-                      onTap: (() async {
-                        if (texto == 'Ocupada') {
-                          final snackBar = SnackBar(
-                            content: const Text('Esta mesa está ocupada!'),
-                            action: SnackBarAction(
-                              label: 'Prosseguir',
-                              textColor: Colors.lightBlue,
-                              onPressed: () {
-                                updateComanda();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => Comandas(
-                                      nummesa: mesas[index].toString(),
-                                    ),
+                        return Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: InkWell(
+                            onTap: (() async {
+                              if (texto == 'Ocupada') {
+                                final snackBar = SnackBar(
+                                  content:
+                                      const Text('Esta mesa está ocupada!'),
+                                  action: SnackBarAction(
+                                    label: 'Prosseguir',
+                                    textColor: Colors.lightBlue,
+                                    onPressed: () {
+                                      updateComanda();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Comandas(
+                                            nummesa: mesas[index].toString(),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 );
-                              },
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            HomePage(
+                                              nmrMesa: mesas[index].toString(),
+                                              ocup: texto,
+                                            )));
+                                await updateVenda();
+                              }
+                            }),
+                            child: Container(
+                              color: cor,
+                              height: 150,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Mesa ${mesas[index]}",
+                              ),
                             ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => HomePage(
-                                        nmrMesa: mesas[index].toString(),
-                                        ocup: texto,
-                                      )));
-                          await updateVenda();
-                        }
-                      }),
-                      child: Container(
-                        color: cor,
-                        height: 150,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Mesa ${mesas[index]}",
-                          style: const TextStyle(fontSize: 30),
-                        ),
+                          ),
+                        );
+                      }, childCount: qtdMesas),
+                    )
+                  : SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        childAspectRatio: 2.0,
+                        crossAxisCount: 5,
                       ),
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        Color? cor;
+                        var texto = '';
+                        if (mesasOcup.isNotEmpty) {
+                          for (var mesa in mesasOcup) {
+                            if (mesas[index] == mesa) {
+                              cor = Colors.red[400];
+                              texto = 'Ocupada';
+                              break;
+                            } else {
+                              cor = Colors.green[400];
+                            }
+                          }
+                        } else {
+                          cor = Colors.green[400];
+                        }
+                        return InkWell(
+                          onTap: (() async {
+                            if (texto == 'Ocupada') {
+                              final snackBar = SnackBar(
+                                content: const Text('Esta mesa está ocupada!'),
+                                action: SnackBarAction(
+                                  label: 'Prosseguir',
+                                  textColor: Colors.lightBlue,
+                                  onPressed: () {
+                                    updateComanda();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Comandas(
+                                          nummesa: mesas[index].toString(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          HomePage(
+                                            nmrMesa: mesas[index].toString(),
+                                            ocup: texto,
+                                          )));
+                              await updateVenda();
+                            }
+                          }),
+                          child: OverflowBox(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  color: cor,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(Icons.table_bar),
+                                        title: Text(
+                                          'Mesa ${mesas[index]}',
+                                        ),
+                                        subtitle: cor == Colors.green[400]
+                                            ? const Text('')
+                                            : const Text('Valor:'),
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        );
+                      }, childCount: mesas.length),
                     ),
-                  );
-                }, childCount: qtdMesas),
-              )
             ],
           ),
         ));
@@ -339,4 +490,10 @@ Future<void> updateFuncionario() async {
 
 Future<void> updateComanda() async {
   await HttpRequest().reqHTTP('Comanda/');
+}
+
+Future<void> refreshRequest() async {
+  await HttpRequest().reqHTTP('Mesa/');
+  Future.delayed(const Duration(seconds: 15));
+  refreshRequest();
 }

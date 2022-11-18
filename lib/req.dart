@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 
@@ -10,6 +11,7 @@ class Rq extends StatefulWidget {
 }
 
 class _RqState extends State<Rq> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
