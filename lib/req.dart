@@ -3,15 +3,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stein/login.dart';
 import 'package:stein/requisicao.dart';
 
+late SharedPreferences preferences;
+
 class Rq extends StatefulWidget {
   const Rq({super.key});
 
   @override
-  State<Rq> createState() => _RqState();
+  State<Rq> createState() => RqState();
 }
 
-class _RqState extends State<Rq> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+class RqState extends State<Rq> {
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      init();
+    });
+  }
+
+  Future init() async {
+    preferences = await SharedPreferences.getInstance();
+  }
+
   final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -36,6 +49,7 @@ class _RqState extends State<Rq> {
                             label: 'Ok',
                             textColor: Colors.redAccent,
                             onPressed: () {
+                              print(req);
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -94,7 +108,8 @@ class _RqState extends State<Rq> {
                     if (value!.isEmpty) {
                       return 'Informe um endereço';
                     } else {
-                      req = value;
+                      preferences.setString('ip', value);
+                      req = preferences.getString('ip');
                     }
                   },
                 ),

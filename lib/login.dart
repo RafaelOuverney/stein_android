@@ -29,7 +29,6 @@ class Login extends StatelessWidget {
             automaticallyImplyLeading: true,
             backgroundColor: Colors.grey[100],
             actions: [
-              IconButton(onPressed: () async {}, icon: const Icon(Icons.add)),
               IconButton(
                   onPressed: () {
                     showDialog(
@@ -245,9 +244,6 @@ class _LoginPageState extends State<LoginPage> {
                                   );
                                 },
                               );
-                              Timer(const Duration(seconds: 5), () {
-                                Navigator.pop(context);
-                              });
                             }
                           }
                         },

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:http/http.dart' as http;
+import 'req.dart';
 
 var mesas = [];
 var mesasOcup = [];
@@ -13,7 +14,7 @@ var tipo = [];
 var tipoTamanho = 0;
 var authUsername = [];
 var mesaComandaId = [];
-var req = 'localhost:7272';
+String? req = '10.0.2.2:8000';
 var authToken = '';
 var tokenzinho = 'invalido';
 var authPassword = '';
@@ -42,7 +43,7 @@ class RequisicaoHttp extends StatefulWidget {
 
 class HttpRequest extends State<RequisicaoHttp> {
   Future<void> reqHTTP(site) async {
-    var url = Uri.http(req, 'djangorestframeworkapi/$site');
+    var url = Uri.http(req.toString(), 'djangorestframeworkapi/$site');
 
     var response =
         await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
@@ -101,7 +102,7 @@ Future chamaToken(usuario, senha) async {
   print(usuario);
   print(senha);
   http.Response resposta = await http.post(
-    Uri.http(req, '/djangorestframeworkapi/verifica-token/'),
+    Uri.http(req.toString(), '/djangorestframeworkapi/verifica-token/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

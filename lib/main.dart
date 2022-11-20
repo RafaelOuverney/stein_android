@@ -3,8 +3,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stein/comandas.dart';
 import 'package:stein/login.dart';
+import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
 import 'package:stein/venda.dart';
@@ -13,9 +15,9 @@ var nominho = '';
 
 void main() async {
   runApp(const Myapp());
-  Timer(const Duration(seconds: 15), () {
-    refreshRequest();
-  });
+  RqState();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  req = preferences.getString('ip');
 }
 
 class Myapp extends StatelessWidget {
@@ -39,7 +41,6 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,6 +111,8 @@ class _FirstPageState extends State<FirstPage> {
                                         );
                                       },
                                       child: ListTile(
+                                        leading: const Icon(Icons.table_bar),
+                                        trailing: const Icon(Icons.arrow_right),
                                         title: Text('Mesa ${mesasOcup[index]}'),
                                       ),
                                     );
@@ -179,7 +182,7 @@ class _FirstPageState extends State<FirstPage> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar.large(
-                pinned: true,
+                pinned: MediaQuery.of(context).size.width < 500 ? true : false,
                 snap: false,
                 floating: false,
                 expandedHeight: 250,
@@ -226,9 +229,11 @@ class _FirstPageState extends State<FirstPage> {
                                           );
                                         },
                                         child: ListTile(
-                                          title: Center(
-                                              child: Text(
-                                                  'Mesa ${mesasOcup[index]}')),
+                                          leading: const Icon(Icons.table_bar),
+                                          trailing:
+                                              const Icon(Icons.arrow_right),
+                                          title:
+                                              Text('Mesa ${mesasOcup[index]}'),
                                         ),
                                       );
                                     },
@@ -240,7 +245,7 @@ class _FirstPageState extends State<FirstPage> {
                         },
                       );
                     },
-                    icon: const Icon(Icons.table_restaurant),
+                    icon: const Icon(Icons.table_bar_outlined),
                     tooltip: 'Mesas Ocupadas',
                   ),
                   IconButton(
@@ -313,7 +318,7 @@ class _FirstPageState extends State<FirstPage> {
                   ),
                 ],
               ),
-              MediaQuery.of(context).size.width < 910
+              MediaQuery.of(context).size.width < 500
                   ? SliverList(
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
@@ -372,12 +377,25 @@ class _FirstPageState extends State<FirstPage> {
                                 await updateVenda();
                               }
                             }),
-                            child: Container(
-                              color: cor,
-                              height: 150,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Mesa ${mesas[index]}",
+                            child: SizedBox(
+                              height: 125,
+                              child: Card(
+                                color: cor,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.table_bar),
+                                      trailing: const Icon(Icons.arrow_right),
+                                      title: Text(
+                                        'Mesa ${mesas[index]}',
+                                      ),
+                                      subtitle: cor == Colors.green[400]
+                                          ? const Text('')
+                                          : const Text('Valor:'),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -385,12 +403,12 @@ class _FirstPageState extends State<FirstPage> {
                       }, childCount: qtdMesas),
                     )
                   : SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         mainAxisSpacing: 10.0,
                         crossAxisSpacing: 10.0,
                         childAspectRatio: 2.0,
-                        crossAxisCount: 5,
+                        crossAxisCount:
+                            MediaQuery.of(context).size.width > 500 ? 3 : 5,
                       ),
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
@@ -455,6 +473,7 @@ class _FirstPageState extends State<FirstPage> {
                                     children: [
                                       ListTile(
                                         leading: const Icon(Icons.table_bar),
+                                        trailing: const Icon(Icons.arrow_right),
                                         title: Text(
                                           'Mesa ${mesas[index]}',
                                         ),
