@@ -50,15 +50,11 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            Container(
-              padding: const EdgeInsets.all(25),
-              child: Center(
-                child: Text(
-                  widget.ocup,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.add_task)),
+            )
           ],
           toolbarHeight: 100,
           title: Text('Mesa: ${widget.nmrMesa}'),

@@ -19,6 +19,7 @@ var authToken = '';
 var tokenzinho = 'invalido';
 var authPassword = '';
 var authUsuario = '';
+var garcomChamado = [];
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -51,12 +52,16 @@ class HttpRequest extends State<RequisicaoHttp> {
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
       mesasOcup = [];
+      garcomChamado = [];
       var list = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       list.forEach((element) {
         mesas.add(element['numero']);
         if (element['ocupada']) {
           mesasOcup.add(element['numero']);
+        }
+        if (element['garcom']) {
+          garcomChamado.add(element['numero']);
         }
       });
       qtdMesas = mesas.length;
@@ -116,4 +121,16 @@ Future chamaToken(usuario, senha) async {
     tokenzinho = 'invalido';
     return false;
   }
+}
+
+Future respondeChamado(numeroMesa) async {
+  http.Response chamado = await http.put(
+      Uri.http(req.toString(), 'djangorestframeworkapi/Mesa/$numeroMesa/'),
+      headers: {
+        'Authorization': 'Token $tokenzinho',
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode({'garcom': false, 'numero': numeroMesa}));
+
+  print(chamado.body);
 }

@@ -12,6 +12,8 @@ import 'package:stein/sobre.dart';
 import 'package:stein/venda.dart';
 
 var nominho = '';
+var textoChamado = '';
+var contemGarcom = '';
 
 void main() async {
   runApp(const Myapp());
@@ -232,8 +234,9 @@ class _FirstPageState extends State<FirstPage> {
                                           leading: const Icon(Icons.table_bar),
                                           trailing:
                                               const Icon(Icons.arrow_right),
-                                          title:
-                                              Text('Mesa ${mesasOcup[index]}'),
+                                          title: Text(
+                                              //garcomChamado.contains
+                                              'Mesa ${mesasOcup[index]}  $contemGarcom'),
                                         ),
                                       );
                                     },
@@ -326,6 +329,11 @@ class _FirstPageState extends State<FirstPage> {
                         var texto = '';
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
+                            if (garcomChamado.contains(mesas[index])) {
+                              cor = Color.fromARGB(255, 241, 238, 21);
+                              texto = 'Ocupada';
+                              break;
+                            }
                             if (mesas[index] == mesa) {
                               cor = Colors.red[400];
                               texto = 'Ocupada';
@@ -342,7 +350,44 @@ class _FirstPageState extends State<FirstPage> {
                           padding: const EdgeInsets.all(12.0),
                           child: InkWell(
                             onTap: (() async {
-                              if (texto == 'Ocupada') {
+                              if (cor == Color.fromARGB(255, 241, 238, 21) ||
+                                  texto == 'ocupada') {
+                                textoChamado =
+                                    'Responder chamado da mesa ${mesas[index]}';
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Expanded(
+                                      child: AlertDialog(
+                                        title: const Text(
+                                          'Responder Chamado',
+                                          style: TextStyle(
+                                              color: Colors.blueAccent),
+                                        ),
+                                        content: Text(textoChamado),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              await respondeChamado(
+                                                  mesas[index]);
+                                              await updateRequest();
+                                              return Future.delayed(
+                                                  const Duration(seconds: 1),
+                                                  () {
+                                                setState(() {
+                                                  updateRequest();
+                                                });
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else if (texto == 'Ocupada') {
                                 final snackBar = SnackBar(
                                   content:
                                       const Text('Esta mesa está ocupada!'),
@@ -408,7 +453,7 @@ class _FirstPageState extends State<FirstPage> {
                         crossAxisSpacing: 10.0,
                         childAspectRatio: 2.0,
                         crossAxisCount:
-                            MediaQuery.of(context).size.width > 500 ? 3 : 5,
+                            MediaQuery.of(context).size.width > 1000 ? 4 : 2,
                       ),
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
@@ -416,7 +461,11 @@ class _FirstPageState extends State<FirstPage> {
                         var texto = '';
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
-                            if (mesas[index] == mesa) {
+                            if (garcomChamado.contains(mesas[index])) {
+                              cor = Color.fromARGB(255, 241, 238, 21);
+                              texto = 'Ocupada';
+                              break;
+                            } else if (mesas[index] == mesa) {
                               cor = Colors.red[400];
                               texto = 'Ocupada';
                               break;
