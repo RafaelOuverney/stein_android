@@ -212,6 +212,8 @@ class _LoginPageState extends State<LoginPage> {
                             if (tokenzinho != 'invalido') {
                               await updateRequest();
                               await updateFuncionario();
+                              await HttpRequest().reqHTTP('Funcionarios/');
+                              // refreshRequest();
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(

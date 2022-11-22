@@ -57,8 +57,8 @@ class _FirstPageState extends State<FirstPage> {
                 },
               ),
               UserAccountsDrawerHeader(
-                accountName: Text(nominho),
-                accountEmail: const Text('Email'),
+                accountName: Text(funcionarioNome),
+                accountEmail: Text(funcionarioFuncao),
                 currentAccountPicture: const CircleAvatar(
                   child: Icon(Icons.person),
                 ),
@@ -131,8 +131,8 @@ class _FirstPageState extends State<FirstPage> {
               ),
               ListTile(
                 title: Text('  Meus Dados', style: GoogleFonts.inter()),
-                onTap: (() {
-                  mesas.forEach((element) {});
+                onTap: (() async {
+                  await HttpRequest().reqHTTP('Funcionarios/');
                 }),
               ),
               ListTile(
@@ -560,8 +560,8 @@ Future<void> updateComanda() async {
   await HttpRequest().reqHTTP('Comanda/');
 }
 
-Future<void> refreshRequest() async {
-  await HttpRequest().reqHTTP('Mesa/');
-  Future.delayed(const Duration(seconds: 15));
-  refreshRequest();
-}
+// Future<void> refreshRequest() async {
+//   await HttpRequest().reqHTTP('Mesa/');
+//   await Future.delayed(const Duration(seconds: 10));
+//   refreshRequest();
+// }

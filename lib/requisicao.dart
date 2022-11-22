@@ -5,7 +5,8 @@ import 'dart:convert';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:http/http.dart' as http;
-import 'req.dart';
+
+import 'main.dart';
 
 var mesas = [];
 var mesasOcup = [];
@@ -20,6 +21,10 @@ var tokenzinho = 'invalido';
 var authPassword = '';
 var authUsuario = '';
 var garcomChamado = [];
+var dadosUsuario = [];
+var funcionarioNome = '';
+var funcionarioFuncao = '';
+var funcaoFuncionario = '';
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -43,11 +48,18 @@ class RequisicaoHttp extends StatefulWidget {
 }
 
 class HttpRequest extends State<RequisicaoHttp> {
+  final parametrosDeBusca = {'usuario': nominho};
   Future<void> reqHTTP(site) async {
     var url = Uri.http(req.toString(), 'djangorestframeworkapi/$site');
 
     var response =
         await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+
+    var funcionarioUri = Uri.http(req.toString(),
+        'djangorestframeworkapi/Funcionarios/', parametrosDeBusca);
+
+    var funcionarioResponse = await http
+        .get(funcionarioUri, headers: {'Authorization': 'Token $tokenzinho'});
 
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
@@ -91,6 +103,22 @@ class HttpRequest extends State<RequisicaoHttp> {
         mesaComandaId.add(element['id']);
         print(mesaComandaId);
       });
+    } else if (funcionarioResponse.statusCode == 200 &&
+        site == 'Funcionarios/') {
+      dadosUsuario = [];
+
+      var dadosUser =
+          json.decode(utf8.decode(funcionarioResponse.bodyBytes)) as List;
+
+      funcionarioNome =
+          dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
+
+      var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
+      funcionarioFuncao = funcFuncao['nome'];
+
+      print(funcionarioFuncao);
+
+      print(funcionarioNome);
     } else {
       print('error');
     }
@@ -133,4 +161,11 @@ Future respondeChamado(numeroMesa) async {
       body: jsonEncode({'garcom': false, 'numero': numeroMesa}));
 
   print(chamado.body);
+}
+
+requisitaFuncao(site) async {
+  var url = Uri.parse(site);
+  var response =
+      await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+  return json.decode(response.body);
 }
