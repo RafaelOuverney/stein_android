@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'main.dart';
 
 var mesas = [];
+var listMesas = [];
 var mesasOcup = [];
 var qtdMesas = 0;
 var tipo = [];
@@ -68,6 +69,11 @@ class HttpRequest extends State<RequisicaoHttp> {
       var list = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       list.forEach((element) {
+        var dict = <String, String>{
+          'id': '${element["id"]}',
+          'numero': '${element["numero"]}'
+        };
+        listMesas.add(dict);
         mesas.add(element['numero']);
         if (element['ocupada']) {
           mesasOcup.add(element['numero']);
@@ -76,6 +82,7 @@ class HttpRequest extends State<RequisicaoHttp> {
           garcomChamado.add(element['numero']);
         }
       });
+      print(listMesas);
       qtdMesas = mesas.length;
     } else if (response.statusCode == 200 && site == 'TiposDeProduto/') {
       tipo = [];
@@ -101,7 +108,7 @@ class HttpRequest extends State<RequisicaoHttp> {
 
       mesaid.forEach((element) {
         mesaComandaId.add(element['id']);
-        print(mesaComandaId);
+        print(mesaid[0]);
       });
     } else if (funcionarioResponse.statusCode == 200 &&
         site == 'Funcionarios/') {
@@ -168,4 +175,30 @@ requisitaFuncao(site) async {
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
   return json.decode(response.body);
+}
+
+requisitaComandas() async {
+  final parametros = {'encerrada': "False"};
+  var url =
+      Uri.http(req.toString(), 'djangorestframeworkapi/Comanda/', parametros);
+  var response =
+      await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+  print(json.decode(response.body)[0]['valorTotal']);
+
+  //valor total das mesas
+
+  var comandas = json.decode(utf8.decode(response.bodyBytes)) as List;
+  var valores = [];
+  comandas.forEach((element) {
+    valores.add(element['valorTotal']);
+  });
+
+  var mesa = json.decode(utf8.decode(response.bodyBytes)) as List;
+  var numemesa = [];
+  numemesa.forEach((element) {
+    numemesa.add(element['nmrMesa']);
+  });
+
+  print(valores);
+  print(numemesa);
 }

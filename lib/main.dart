@@ -65,8 +65,8 @@ class _FirstPageState extends State<FirstPage> {
               ),
               ListTile(
                 title: Text('  Comandas', style: GoogleFonts.inter()),
-                onTap: (() {
-                  mesas.forEach((element) {});
+                onTap: (() async {
+                  await requisitaComandas();
                 }),
               ),
               ListTile(
