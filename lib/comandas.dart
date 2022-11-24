@@ -44,7 +44,7 @@ class _ComandasState extends State<Comandas> {
                         style: TextStyle(color: Colors.blueAccent),
                       ),
                       content: Text(
-                          'Valor total dos produtos: R\$ ${widget.total.toString().replaceAll('.', ',')} '),
+                          'Valor total dos produtos: R\$ ${widget.total.toStringAsFixed(2).replaceAll('.', ',')} '),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
