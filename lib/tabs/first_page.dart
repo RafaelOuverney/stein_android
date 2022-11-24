@@ -5,14 +5,22 @@ class FirstTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         body: SafeArea(
       child: Center(
         child: SingleChildScrollView(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
+            child: Row(
+          children: [
+            Container(
+              child: SizedBox(
+                width: 250,
+                child: Container(
+                  color: Colors.red,
+                ),
+              ),
+            )
+          ],
+        )),
       ),
     ));
   }

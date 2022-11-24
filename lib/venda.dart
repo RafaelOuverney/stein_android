@@ -50,8 +50,9 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart)),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(5.0),
               child: IconButton(
                   onPressed: () {}, icon: const Icon(Icons.add_task)),
             )
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
         ),
         body: tipo.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? FirstTab()
             : Column(
                 children: [
                   TabBar(

@@ -26,6 +26,8 @@ var dadosUsuario = [];
 var funcionarioNome = '';
 var funcionarioFuncao = '';
 var funcaoFuncionario = '';
+var produtos = [];
+var comandas = [];
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -65,13 +67,17 @@ class HttpRequest extends State<RequisicaoHttp> {
     if (response.statusCode == 200 && site == 'Mesa/') {
       mesas = [];
       mesasOcup = [];
+      listMesas = [];
       garcomChamado = [];
       var list = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       list.forEach((element) {
         var dict = <String, String>{
           'id': '${element["id"]}',
-          'numero': '${element["numero"]}'
+          'numero': '${element["numero"]}',
+          'ocupada': '${element["ocupada"]}',
+          'garcom': '${element["garcom"]}',
+          'valorTotal': '0',
         };
         listMesas.add(dict);
         mesas.add(element['numero']);
@@ -82,7 +88,8 @@ class HttpRequest extends State<RequisicaoHttp> {
           garcomChamado.add(element['numero']);
         }
       });
-      print(listMesas);
+      requisitaComandas();
+
       qtdMesas = mesas.length;
     } else if (response.statusCode == 200 && site == 'TiposDeProduto/') {
       tipo = [];
@@ -108,7 +115,6 @@ class HttpRequest extends State<RequisicaoHttp> {
 
       mesaid.forEach((element) {
         mesaComandaId.add(element['id']);
-        print(mesaid[0]);
       });
     } else if (funcionarioResponse.statusCode == 200 &&
         site == 'Funcionarios/') {
@@ -122,10 +128,6 @@ class HttpRequest extends State<RequisicaoHttp> {
 
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
-
-      print(funcionarioFuncao);
-
-      print(funcionarioNome);
     } else {
       print('error');
     }
@@ -139,8 +141,7 @@ class HttpRequest extends State<RequisicaoHttp> {
 
 Future chamaToken(usuario, senha) async {
   tokenzinho = 'invalido';
-  print(usuario);
-  print(senha);
+
   http.Response resposta = await http.post(
     Uri.http(req.toString(), '/djangorestframeworkapi/verifica-token/'),
     headers: <String, String>{
@@ -166,8 +167,6 @@ Future respondeChamado(numeroMesa) async {
         'Content-Type': 'application/json; charset=UTF-8'
       },
       body: jsonEncode({'garcom': false, 'numero': numeroMesa}));
-
-  print(chamado.body);
 }
 
 requisitaFuncao(site) async {
@@ -183,15 +182,18 @@ requisitaComandas() async {
       Uri.http(req.toString(), 'djangorestframeworkapi/Comanda/', parametros);
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
-  print(json.decode(response.body)[0]['valorTotal']);
 
   //valor total das mesas
 
   var comandas = json.decode(utf8.decode(response.bodyBytes)) as List;
-  var valores = [];
-  comandas.forEach((element) {
-    valores.add(element['valorTotal']);
-  });
+  for (var c = 0; c < comandas.length; c++) {
+    for (var i = 0; i < listMesas.length; i++) {
+      if (comandas[c]['nmrMesa'].toString() == listMesas[i]['id'].toString()) {
+        listMesas[i]['valorTotal'] = comandas[c]['valorTotal'];
+        break;
+      }
+    }
+  }
 
   var mesa = json.decode(utf8.decode(response.bodyBytes)) as List;
   var numemesa = [];
@@ -199,6 +201,58 @@ requisitaComandas() async {
     numemesa.add(element['nmrMesa']);
   });
 
-  print(valores);
-  print(numemesa);
+  // print(valores);
+}
+
+requisitaPedidos(nummesa) async {
+  produtos = [];
+  comandas = [];
+  final parametros = {'encerrada': "False", 'idMesa': nummesa};
+
+  var url =
+      Uri.http(req.toString(), 'djangorestframeworkapi/Comanda/', parametros);
+  var response =
+      await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+
+  var produtosList = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+  produtosList.forEach((element) {
+    print(element);
+    produtos.add(element['produtos']);
+    comandas.add(element['id']);
+  });
+
+  print(comandas);
+
+  await produtosPorComanda();
+}
+
+produtosPorComanda() async {
+  for (var p = 0; p < produtos[0].length; p++) {
+    var parametros = {'id': produtos[0][p].toString()};
+
+    var url = Uri.http(
+        req.toString(), 'djangorestframeworkapi/Produtos/', parametros);
+    var response =
+        await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+
+    var produtosDetalhes = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+    produtosDetalhes.forEach((element) {
+      var dict = <String, String>{
+        'nome': '${element["nome"]}',
+        'preco': '${element["preco"]}'
+      };
+    });
+  }
+  await comandaProdutos();
+}
+
+comandaProdutos() async {
+  var parametros = {'id': '9'};
+
+  var url = Uri.http(
+      req.toString(), 'djangorestframeworkapi/ComandaProduto/', parametros);
+  var response =
+      await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 }

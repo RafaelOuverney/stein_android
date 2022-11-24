@@ -14,6 +14,7 @@ import 'package:stein/venda.dart';
 var nominho = '';
 var textoChamado = '';
 var contemGarcom = '';
+var valor = [];
 
 void main() async {
   runApp(const Myapp());
@@ -66,7 +67,8 @@ class _FirstPageState extends State<FirstPage> {
               ListTile(
                 title: Text('  Comandas', style: GoogleFonts.inter()),
                 onTap: (() async {
-                  await requisitaComandas();
+                  await requisitaPedidos('7');
+                  
                 }),
               ),
               ListTile(
@@ -142,7 +144,7 @@ class _FirstPageState extends State<FirstPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => Sobre()));
+                          builder: (BuildContext context) => const Sobre()));
                 }),
               ),
               ListTile(
@@ -330,16 +332,16 @@ class _FirstPageState extends State<FirstPage> {
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
                             if (garcomChamado.contains(mesas[index])) {
-                              cor = Color.fromARGB(255, 241, 238, 21);
+                              cor = Color.fromARGB(255, 251, 255, 0);
                               texto = 'Ocupada';
                               break;
                             }
                             if (mesas[index] == mesa) {
-                              cor = Colors.red[400];
+                              cor = const Color.fromARGB(255, 95, 32, 30);
                               texto = 'Ocupada';
                               break;
                             } else {
-                              cor = Colors.green[400];
+                              cor = const Color.fromARGB(255, 34, 73, 40);
                             }
                           }
                         } else {
@@ -350,7 +352,8 @@ class _FirstPageState extends State<FirstPage> {
                           padding: const EdgeInsets.all(12.0),
                           child: InkWell(
                             onTap: (() async {
-                              if (cor == Color.fromARGB(255, 241, 238, 21) ||
+                              if (cor ==
+                                      const Color.fromARGB(255, 251, 255, 0) ||
                                   texto == 'ocupada') {
                                 textoChamado =
                                     'Responder chamado da mesa ${mesas[index]}';
@@ -433,12 +436,28 @@ class _FirstPageState extends State<FirstPage> {
                                       leading: const Icon(Icons.table_bar),
                                       trailing: const Icon(Icons.arrow_right),
                                       title: Text(
-                                        'Mesa ${mesas[index]}',
+                                        'Mesa: ${listMesas[index]["numero"]}',
+                                        style: TextStyle(
+                                            color: cor ==
+                                                    Color.fromARGB(
+                                                        255, 251, 255, 0)
+                                                ? Colors.black
+                                                : Colors.white),
                                       ),
-                                      subtitle: cor == Colors.green[400]
+                                      subtitle: cor ==
+                                              const Color.fromARGB(
+                                                  255, 34, 73, 40)
                                           ? const Text('')
-                                          : const Text('Valor:'),
-                                    )
+                                          : Text(
+                                              'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                              style: TextStyle(
+                                                  color: cor ==
+                                                          Color.fromARGB(
+                                                              255, 251, 255, 0)
+                                                      ? Colors.black
+                                                      : Colors.white),
+                                            ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -453,7 +472,7 @@ class _FirstPageState extends State<FirstPage> {
                         crossAxisSpacing: 10.0,
                         childAspectRatio: 2.0,
                         crossAxisCount:
-                            MediaQuery.of(context).size.width > 1000 ? 4 : 2,
+                            MediaQuery.of(context).size.width > 1000 ? 4 : 3,
                       ),
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
@@ -462,15 +481,15 @@ class _FirstPageState extends State<FirstPage> {
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
                             if (garcomChamado.contains(mesas[index])) {
-                              cor = Color.fromARGB(255, 241, 238, 21);
+                              cor = const Color.fromARGB(255, 241, 238, 21);
                               texto = 'Ocupada';
                               break;
                             } else if (mesas[index] == mesa) {
-                              cor = Colors.red[400];
+                              cor = const Color.fromARGB(255, 95, 32, 30);
                               texto = 'Ocupada';
                               break;
                             } else {
-                              cor = Colors.green[400];
+                              cor = const Color.fromARGB(255, 34, 73, 40);
                             }
                           }
                         } else {
@@ -521,14 +540,28 @@ class _FirstPageState extends State<FirstPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       ListTile(
-                                        leading: const Icon(Icons.table_bar),
-                                        trailing: const Icon(Icons.arrow_right),
+                                        leading: const Icon(
+                                          Icons.table_bar,
+                                          color: Colors.white,
+                                        ),
+                                        trailing: const Icon(
+                                          Icons.arrow_right,
+                                          color: Colors.white,
+                                        ),
                                         title: Text(
                                           'Mesa ${mesas[index]}',
+                                          style: const TextStyle(
+                                              color: Colors.white),
                                         ),
-                                        subtitle: cor == Colors.green[400]
+                                        subtitle: cor ==
+                                                const Color.fromARGB(
+                                                    255, 34, 73, 40)
                                             ? const Text('')
-                                            : const Text('Valor:'),
+                                            : Text(
+                                                'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                       )
                                     ],
                                   ),
