@@ -108,6 +108,8 @@ class _FirstPageState extends State<FirstPage> {
                                                 Comandas(
                                               nummesa:
                                                   mesasOcup[index].toString(),
+                                              valorTotal:
+                                                  'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                             ),
                                           ),
                                         );
@@ -240,6 +242,8 @@ class _FirstPageState extends State<FirstPage> {
                                               builder: (BuildContext context) =>
                                                   Comandas(
                                                 nummesa: ind.toString(),
+                                                valorTotal:
+                                                    'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                               ),
                                             ),
                                           );
@@ -403,30 +407,28 @@ class _FirstPageState extends State<FirstPage> {
                                   },
                                 );
                               } else if (texto == 'Ocupada') {
-                                final snackBar = SnackBar(
-                                  content:
-                                      const Text('Esta mesa está ocupada!'),
-                                  action: SnackBarAction(
-                                    label: 'Prosseguir',
-                                    textColor: Colors.lightBlue,
-                                    onPressed: () async {
-                                      await requisitaPedidos(
-                                          listMesas[index]["id"]);
-                                      updateComanda();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Comandas(
-                                            nummesa: mesas[index].toString(),
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return const Center(
+                                          child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ));
+                                    });
+
+                                await requisitaPedidos(listMesas[index]["id"]);
+                                updateComanda();
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => Comandas(
+                                      nummesa: mesas[index].toString(),
+                                      valorTotal:
+                                          'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                    ),
                                   ),
                                 );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
                               } else {
                                 Navigator.push(
                                     context,
@@ -525,6 +527,8 @@ class _FirstPageState extends State<FirstPage> {
                                         builder: (BuildContext context) =>
                                             Comandas(
                                           nummesa: mesas[index].toString(),
+                                          valorTotal:
+                                              'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                         ),
                                       ),
                                     );

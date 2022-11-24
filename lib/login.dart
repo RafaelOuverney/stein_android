@@ -207,12 +207,24 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.grey[800],
                         onPressed: () async {
                           if (formkey.currentState!.validate()) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ));
+                                });
                             await chamaToken(nominho, senhinha);
 
                             if (tokenzinho != 'invalido') {
+                              await HttpRequest().reqHTTP('Funcionarios/');
+
                               await updateRequest();
                               await updateFuncionario();
-                              await HttpRequest().reqHTTP('Funcionarios/');
+
+                              Navigator.pop(context);
+
                               // refreshRequest();
                               Navigator.pushAndRemoveUntil(
                                 context,
@@ -223,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                                 (route) => false,
                               );
                             } else {
+                              Navigator.pop(context);
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
