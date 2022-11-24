@@ -28,6 +28,8 @@ var funcionarioFuncao = '';
 var funcaoFuncionario = '';
 var produtos = [];
 var comandas = [];
+var produtosPerComanda = [];
+var quantidadeProdutosPerComanda = 0;
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -215,19 +217,16 @@ requisitaPedidos(nummesa) async {
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
   var produtosList = json.decode(utf8.decode(response.bodyBytes)) as List;
-
   produtosList.forEach((element) {
-    print(element);
     produtos.add(element['produtos']);
     comandas.add(element['id']);
   });
-
-  print(comandas);
 
   await produtosPorComanda();
 }
 
 produtosPorComanda() async {
+  var lista = [];
   for (var p = 0; p < produtos[0].length; p++) {
     var parametros = {'id': produtos[0][p].toString()};
 
@@ -237,22 +236,47 @@ produtosPorComanda() async {
         await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
     var produtosDetalhes = json.decode(utf8.decode(response.bodyBytes)) as List;
-
     produtosDetalhes.forEach((element) {
       var dict = <String, String>{
         'nome': '${element["nome"]}',
-        'preco': '${element["preco"]}'
+        'preco': '${element["preco"]}',
+        'id': '${element['id']}',
+        'imagem': '${element['imagem']}'
       };
+      lista.add(dict);
     });
   }
-  await comandaProdutos();
+  await comandaProdutos(lista);
 }
 
-comandaProdutos() async {
-  var parametros = {'id': '9'};
+comandaProdutos(dadosProduto) async {
+  var parametros = {'comanda': comandas[0].toString()};
 
   var url = Uri.http(
       req.toString(), 'djangorestframeworkapi/ComandaProduto/', parametros);
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+
+  var quantidadeProdutos = json.decode(utf8.decode(response.bodyBytes)) as List;
+  var list = [];
+  quantidadeProdutos.forEach((element) {
+    var dict = <String, String>{
+      'produto': '${element["produto"]}',
+      'quantidade': '${element["quantidade"]}'
+    };
+    list.add(dict);
+  });
+
+  for (var c = 0; c < dadosProduto.length; c++) {
+    for (var i = 0; i < list.length; i++) {
+      if (dadosProduto[c]['id'].toString() == list[i]['produto'].toString()) {
+        dadosProduto[c]['quantidade'] = list[i]['quantidade'];
+
+        break;
+      }
+    }
+  }
+  produtosPerComanda = dadosProduto;
+  quantidadeProdutosPerComanda = produtosPerComanda.length;
+  print(quantidadeProdutosPerComanda);
 }

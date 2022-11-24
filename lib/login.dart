@@ -73,7 +73,7 @@ class Login extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(
-                  height: 200,
+                  height: 125,
                 ),
                 SizedBox(
                     height: 200,
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(
                       height: 100,
-                      width: 350,
+                      width: 325,
                       child: TextFormField(
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(
                       height: 100,
-                      width: 350,
+                      width: 325,
                       child: TextFormField(
                         obscureText: _isObscure,
                         decoration: InputDecoration(

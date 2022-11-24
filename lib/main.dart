@@ -15,6 +15,7 @@ var nominho = '';
 var textoChamado = '';
 var contemGarcom = '';
 var valor = [];
+var ind = '';
 
 void main() async {
   runApp(const Myapp());
@@ -66,10 +67,7 @@ class _FirstPageState extends State<FirstPage> {
               ),
               ListTile(
                 title: Text('  Comandas', style: GoogleFonts.inter()),
-                onTap: (() async {
-                  await requisitaPedidos('7');
-                  
-                }),
+                onTap: (() async {}),
               ),
               ListTile(
                 title: Text('  Mesas Ocupadas', style: GoogleFonts.inter()),
@@ -219,15 +217,29 @@ class _FirstPageState extends State<FirstPage> {
                                     itemCount: mesasOcup.length,
                                     itemBuilder: (context, index) {
                                       return InkWell(
-                                        onTap: () {
+                                        onTap: () async {
+                                          ind = '';
+                                          for (var c = 0;
+                                              c < listMesas.length;
+                                              c++) {
+                                            if (listMesas[c]['id'].toString() ==
+                                                mesasOcup[index].toString()) {
+                                              ind = listMesas[c]['id'];
+
+                                              await requisitaPedidos(
+                                                  listMesas[c]["id"]);
+                                              await updateComanda();
+                                              break;
+                                            }
+                                          }
+
                                           Navigator.pop(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (BuildContext context) =>
                                                   Comandas(
-                                                nummesa:
-                                                    mesasOcup[index].toString(),
+                                                nummesa: ind.toString(),
                                               ),
                                             ),
                                           );
@@ -397,7 +409,9 @@ class _FirstPageState extends State<FirstPage> {
                                   action: SnackBarAction(
                                     label: 'Prosseguir',
                                     textColor: Colors.lightBlue,
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      await requisitaPedidos(
+                                          listMesas[index]["id"]);
                                       updateComanda();
                                       Navigator.push(
                                         context,
