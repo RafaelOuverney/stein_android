@@ -30,6 +30,7 @@ var produtos = [];
 var comandas = [];
 var produtosPerComanda = [];
 var quantidadeProdutosPerComanda = 0;
+var produtosP = [];
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -279,4 +280,23 @@ comandaProdutos(dadosProduto) async {
   produtosPerComanda = dadosProduto;
   quantidadeProdutosPerComanda = produtosPerComanda.length;
   print(quantidadeProdutosPerComanda);
+}
+
+produtosReq(tipoProdId) async {
+  produtosP = [];
+  var url = Uri.http(req.toString(), 'djangorestframeworkapi/Produtos/');
+  var response =
+      await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
+
+  var produtosPp = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+  produtosPp.forEach((element) {
+    var dici = <String, String>{
+      'nome': '${element['nome']}',
+      'imagem': '${element['imagem']}',
+      'preco': '${element['preco']}',
+      'id': '${element['tipoProduto']}'
+    };
+    produtosP.add(dici);
+  });
 }

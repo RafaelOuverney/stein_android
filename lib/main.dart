@@ -241,7 +241,8 @@ class _FirstPageState extends State<FirstPage> {
                                             MaterialPageRoute(
                                               builder: (BuildContext context) =>
                                                   Comandas(
-                                                nummesa: ind.toString(),
+                                                nummesa: listMesas[index]['id']
+                                                    .toString(),
                                                 valorTotal:
                                                     'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                               ),
@@ -348,20 +349,20 @@ class _FirstPageState extends State<FirstPage> {
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
                             if (garcomChamado.contains(mesas[index])) {
-                              cor = Color.fromARGB(255, 251, 255, 0);
+                              cor = Color.fromARGB(255, 255, 196, 0);
                               texto = 'Ocupada';
                               break;
                             }
                             if (mesas[index] == mesa) {
-                              cor = const Color.fromARGB(255, 95, 32, 30);
+                              cor = Color.fromARGB(255, 156, 5, 0);
                               texto = 'Ocupada';
                               break;
                             } else {
-                              cor = const Color.fromARGB(255, 34, 73, 40);
+                              cor = Color.fromARGB(255, 0, 102, 15);
                             }
                           }
                         } else {
-                          cor = Colors.green[400];
+                          cor = const Color.fromARGB(255, 0, 145, 22);
                         }
 
                         return Padding(
@@ -369,7 +370,7 @@ class _FirstPageState extends State<FirstPage> {
                           child: InkWell(
                             onTap: (() async {
                               if (cor ==
-                                      const Color.fromARGB(255, 251, 255, 0) ||
+                                      const Color.fromARGB(255, 255, 196, 0) ||
                                   texto == 'ocupada') {
                                 textoChamado =
                                     'Responder chamado da mesa ${mesas[index]}';
@@ -455,21 +456,21 @@ class _FirstPageState extends State<FirstPage> {
                                         'Mesa: ${listMesas[index]["numero"]}',
                                         style: TextStyle(
                                             color: cor ==
-                                                    Color.fromARGB(
-                                                        255, 251, 255, 0)
+                                                    const Color.fromARGB(
+                                                        255, 255, 196, 0)
                                                 ? Colors.black
                                                 : Colors.white),
                                       ),
                                       subtitle: cor ==
                                               const Color.fromARGB(
-                                                  255, 34, 73, 40)
+                                                  255, 0, 102, 15)
                                           ? const Text('')
                                           : Text(
                                               'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                               style: TextStyle(
                                                   color: cor ==
                                                           Color.fromARGB(
-                                                              255, 251, 255, 0)
+                                                              255, 255, 196, 0)
                                                       ? Colors.black
                                                       : Colors.white),
                                             ),
@@ -497,46 +498,34 @@ class _FirstPageState extends State<FirstPage> {
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
                             if (garcomChamado.contains(mesas[index])) {
-                              cor = const Color.fromARGB(255, 241, 238, 21);
+                              cor = const Color.fromARGB(255, 255, 196, 0);
                               texto = 'Ocupada';
                               break;
                             } else if (mesas[index] == mesa) {
-                              cor = const Color.fromARGB(255, 95, 32, 30);
+                              cor = const Color.fromARGB(255, 182, 6, 0);
                               texto = 'Ocupada';
                               break;
                             } else {
-                              cor = const Color.fromARGB(255, 34, 73, 40);
+                              cor = const Color.fromARGB(255, 0, 102, 15);
                             }
                           }
                         } else {
-                          cor = Colors.green[400];
+                          cor = const Color.fromARGB(255, 0, 102, 15);
                         }
                         return InkWell(
                           onTap: (() async {
                             if (texto == 'Ocupada') {
-                              final snackBar = SnackBar(
-                                content: const Text('Esta mesa está ocupada!'),
-                                action: SnackBarAction(
-                                  label: 'Prosseguir',
-                                  textColor: Colors.lightBlue,
-                                  onPressed: () {
-                                    updateComanda();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Comandas(
-                                          nummesa: mesas[index].toString(),
-                                          valorTotal:
-                                              'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                        ),
-                                      ),
-                                    );
-                                  },
+                              updateComanda();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => Comandas(
+                                    nummesa: mesas[index].toString(),
+                                    valorTotal:
+                                        'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                  ),
                                 ),
                               );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
                             } else {
                               Navigator.push(
                                   context,
@@ -560,25 +549,34 @@ class _FirstPageState extends State<FirstPage> {
                                       ListTile(
                                         leading: const Icon(
                                           Icons.table_bar,
-                                          color: Colors.white,
                                         ),
-                                        trailing: const Icon(
-                                          Icons.arrow_right,
-                                          color: Colors.white,
-                                        ),
+                                        trailing: Icon(Icons.arrow_right,
+                                            color: cor ==
+                                                    Color.fromARGB(
+                                                        255, 255, 196, 0)
+                                                ? Colors.black
+                                                : Colors.white),
                                         title: Text(
                                           'Mesa ${mesas[index]}',
-                                          style: const TextStyle(
-                                              color: Colors.white),
+                                          style: TextStyle(
+                                              color: cor ==
+                                                      Color.fromARGB(
+                                                          255, 255, 196, 0)
+                                                  ? Colors.black
+                                                  : Colors.white),
                                         ),
                                         subtitle: cor ==
                                                 const Color.fromARGB(
-                                                    255, 34, 73, 40)
+                                                    255, 0, 102, 15)
                                             ? const Text('')
                                             : Text(
                                                 'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                                style: const TextStyle(
-                                                    color: Colors.white),
+                                                style: TextStyle(
+                                                    color: cor ==
+                                                            Color.fromARGB(255,
+                                                                255, 196, 0)
+                                                        ? Colors.black
+                                                        : Colors.white),
                                               ),
                                       )
                                     ],

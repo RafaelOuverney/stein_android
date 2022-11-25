@@ -22,27 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void initSate() {
-    super.initState();
-
-    load();
-  }
-
-  Future load() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-    setState(() {
-      updateVenda();
-    });
-
-    Navigator.pop;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -50,7 +29,11 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart)),
+            IconButton(
+                onPressed: () async {
+                  await produtosReq('$tipoTamanho');
+                },
+                icon: Icon(Icons.shopping_cart)),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: IconButton(
@@ -63,7 +46,9 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
         ),
         body: tipo.isEmpty
-            ? FirstTab()
+            ? FirstTab(
+                tipoProd: '1',
+              )
             : Column(
                 children: [
                   TabBar(
@@ -81,7 +66,10 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        for (int t = 0; t < tipoTamanho; t++) const FirstTab()
+                        for (int t = 0; t < tipoTamanho; t++)
+                          FirstTab(
+                            tipoProd: '1',
+                          )
                       ],
                     ),
                   )
