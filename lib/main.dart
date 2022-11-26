@@ -9,6 +9,7 @@ import 'package:stein/login.dart';
 import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
+import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
 var nominho = '';
@@ -225,7 +226,9 @@ class _FirstPageState extends State<FirstPage> {
                                               c < listMesas.length;
                                               c++) {
                                             if (listMesas[c]['id'].toString() ==
-                                                mesasOcup[index].toString()) {
+                                                mesasOcup[mesasOcup
+                                                        .indexOf(listMesas)]
+                                                    .toString()) {
                                               ind = listMesas[c]['id'];
 
                                               await requisitaPedidos(
@@ -431,6 +434,7 @@ class _FirstPageState extends State<FirstPage> {
                                   ),
                                 );
                               } else {
+                                await produtosReq();
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

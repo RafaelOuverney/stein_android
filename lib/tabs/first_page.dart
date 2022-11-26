@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:stein/requisicao.dart';
+import 'package:http/http.dart' as http;
 
 int num = 0;
+List filter = [];
+var separador = '';
 
 class FirstTab extends StatefulWidget {
   var tipoProd = '';
+
   FirstTab({super.key, required this.tipoProd});
 
   @override
@@ -15,21 +22,23 @@ class FirstTab extends StatefulWidget {
 class _FirstTabState extends State<FirstTab> {
   @override
   Widget build(BuildContext context) {
+    separador = widget.tipoProd;
+
     return Scaffold(
-        body: SafeArea(
-      child: ListView.builder(
-          itemCount: produtosP.length,
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: filter.length,
           itemBuilder: ((context, index) {
             return ListTile(
-              title: Text('${produtosP[index]['nome']}'),
-              subtitle: Text('R\$ ${produtosP[index]['preco']}'),
+              title: Text('${filter[index]['nome']}'),
+              subtitle: Text('R\$ ${filter[index]['preco']}'),
               leading: SizedBox(
                   width: 75,
                   child: Center(
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Image.network(
-                            '${produtosP[index]['imagem']}',
+                            '${filter[index]['imagem']}',
                           )))),
               trailing: Container(
                 width: 90,
@@ -70,7 +79,9 @@ class _FirstTabState extends State<FirstTab> {
                 ),
               ),
             );
-          })),
-    ));
+          }),
+        ),
+      ),
+    );
   }
 }

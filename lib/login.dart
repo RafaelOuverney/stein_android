@@ -2,7 +2,9 @@
 
 import 'dart:async';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
 import 'package:stein/req.dart';
@@ -156,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 100,
                       width: 325,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text('Usuário'),
@@ -165,6 +168,8 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) {
                           if (value!.isEmpty || value == null) {
                             return 'Usuario é necessário';
+                          } else if (value == 'admin') {
+                            return 'Usuario Inválido';
                           }
                           nominho = value;
                         },

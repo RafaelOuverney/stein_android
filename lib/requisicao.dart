@@ -2,9 +2,12 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:http/http.dart' as http;
+import 'package:stein/tabs/first_page.dart';
+import 'package:provider/provider.dart';
 
 import 'main.dart';
 
@@ -100,7 +103,11 @@ class HttpRequest extends State<RequisicaoHttp> {
       var tipos = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       tipos.forEach((element) {
-        tipo.add(element['tipo']);
+        var dicionario = {
+          'nome': '${element['tipo']}',
+          'id': '${element['id']}'
+        };
+        tipo.add(dicionario);
       });
       tipoTamanho = tipo.length;
     } else if (response.statusCode == 200 && site == 'Users/') {
@@ -282,9 +289,11 @@ comandaProdutos(dadosProduto) async {
   print(quantidadeProdutosPerComanda);
 }
 
-produtosReq(tipoProdId) async {
+Future produtosReq() async {
   produtosP = [];
+  filter = [];
   var url = Uri.http(req.toString(), 'djangorestframeworkapi/Produtos/');
+
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
@@ -297,6 +306,14 @@ produtosReq(tipoProdId) async {
       'preco': '${element['preco']}',
       'id': '${element['tipoProduto']}'
     };
+
     produtosP.add(dici);
   });
+
+  var produtoTipos =
+      produtosP.where((element) => element['id'] == '1').toList();
+
+  filter.addAll(produtosP);
+  filter.retainWhere((element) => element['id'] == separador);
+  print(separador);
 }

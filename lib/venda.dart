@@ -22,6 +22,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var prodPId = [];
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -31,7 +33,11 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () async {
-                  await produtosReq('$tipoTamanho');
+                  await produtosReq();
+
+                  setState(() {
+                    produtosReq();
+                  });
                 },
                 icon: Icon(Icons.shopping_cart)),
             Padding(
@@ -57,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                       for (int c = 0; c < tipoTamanho; c++)
                         Tab(
                           child: Text(
-                            '${tipo[c]}',
+                            '${tipo[c]['nome']}',
                             style: const TextStyle(color: Colors.black),
                           ),
                         ),
@@ -67,9 +73,7 @@ class _HomePageState extends State<HomePage> {
                     child: TabBarView(
                       children: [
                         for (int t = 0; t < tipoTamanho; t++)
-                          FirstTab(
-                            tipoProd: '1',
-                          )
+                          FirstTab(tipoProd: '${tipo[t]['id']}'),
                       ],
                     ),
                   )
