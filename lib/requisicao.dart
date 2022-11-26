@@ -314,6 +314,6 @@ Future produtosReq() async {
       produtosP.where((element) => element['id'] == '1').toList();
 
   filter.addAll(produtosP);
-  filter.retainWhere((element) => element['id'] == separador);
+  filter.retainWhere((Element) => Element['id'] == separador);
   print(separador);
 }

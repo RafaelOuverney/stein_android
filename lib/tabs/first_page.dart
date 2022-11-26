@@ -24,6 +24,12 @@ class _FirstTabState extends State<FirstTab> {
   Widget build(BuildContext context) {
     separador = widget.tipoProd;
 
+    setState(() {
+      //filter.retainWhere((Element) => Element['id'] == '1');
+      print(filter);
+      print(separador);
+    });
+
     return Scaffold(
       body: SafeArea(
         child: ListView.builder(
@@ -33,7 +39,7 @@ class _FirstTabState extends State<FirstTab> {
               title: Text('${filter[index]['nome']}'),
               subtitle: Text('R\$ ${filter[index]['preco']}'),
               leading: SizedBox(
-                  width: 75,
+                  width: 100,
                   child: Center(
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),

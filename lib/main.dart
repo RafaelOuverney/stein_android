@@ -16,7 +16,7 @@ var nominho = '';
 var textoChamado = '';
 var contemGarcom = '';
 var valor = [];
-var ind = '';
+var ind = [];
 
 void main() async {
   runApp(const Myapp());
@@ -195,6 +195,10 @@ class _FirstPageState extends State<FirstPage> {
                 actions: [
                   IconButton(
                     onPressed: () {
+                      ind.addAll(listMesas);
+                      ind.retainWhere(
+                          (element) => element['ocupada'] == 'false');
+
                       showModalBottomSheet<void>(
                         context: context,
                         builder: (context) {
@@ -202,13 +206,23 @@ class _FirstPageState extends State<FirstPage> {
                             height: 500,
                             child: Column(
                               children: [
-                                const SizedBox(
+                                SizedBox(
                                   height: 70,
-                                  child: Center(
-                                    child: Text(
-                                      'Mesas Ocupadas',
-                                      textAlign: TextAlign.center,
-                                      textScaleFactor: 1.5,
+                                  child: ListTile(
+                                    leading: SizedBox(
+                                      height: 25,
+                                    ),
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(Icons.close)),
+                                    title: const Center(
+                                      child: Text(
+                                        'Mesas Livres',
+                                        textAlign: TextAlign.center,
+                                        textScaleFactor: 1.5,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -217,39 +231,54 @@ class _FirstPageState extends State<FirstPage> {
                                 ),
                                 Expanded(
                                   child: ListView.builder(
-                                    itemCount: mesasOcup.length,
+                                    itemCount: mesas.length - mesasOcup.length,
                                     itemBuilder: (context, index) {
                                       return InkWell(
                                         onTap: () async {
-                                          ind = '';
-                                          for (var c = 0;
-                                              c < listMesas.length;
-                                              c++) {
-                                            if (listMesas[c]['id'].toString() ==
-                                                mesasOcup[mesasOcup
-                                                        .indexOf(listMesas)]
-                                                    .toString()) {
-                                              ind = listMesas[c]['id'];
-
-                                              await requisitaPedidos(
-                                                  listMesas[c]["id"]);
-                                              await updateComanda();
-                                              break;
-                                            }
-                                          }
-
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Comandas(
-                                                nummesa: listMesas[index]['id']
-                                                    .toString(),
-                                                valorTotal:
-                                                    'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                              ),
-                                            ),
+                                          var texto =
+                                              'Deseja ocupar a mesa ${ind[index + 1]['numero']} ?';
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Expanded(
+                                                child: AlertDialog(
+                                                  title: const Text(
+                                                    'Ocupar Mesa',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.blueAccent),
+                                                  ),
+                                                  content: Text(texto),
+                                                  actions: [
+                                                    ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            'Cancelar')),
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        await respondeChamado(
+                                                            mesas[index]);
+                                                        await updateRequest();
+                                                        return Future.delayed(
+                                                            const Duration(
+                                                                seconds: 1),
+                                                            () {
+                                                          setState(() {
+                                                            updateRequest();
+                                                          });
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                      },
+                                                      child: const Text('Ok'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
                                           );
                                         },
                                         child: ListTile(
@@ -258,7 +287,7 @@ class _FirstPageState extends State<FirstPage> {
                                               const Icon(Icons.arrow_right),
                                           title: Text(
                                               //garcomChamado.contains
-                                              'Mesa ${mesasOcup[index]}  $contemGarcom'),
+                                              'Mesa ${ind[index + 1]['numero'].toString()} '),
                                         ),
                                       );
                                     },
@@ -271,7 +300,7 @@ class _FirstPageState extends State<FirstPage> {
                       );
                     },
                     icon: const Icon(Icons.table_bar_outlined),
-                    tooltip: 'Mesas Ocupadas',
+                    tooltip: 'Mesas Livres',
                   ),
                   IconButton(
                     onPressed: () {
@@ -434,7 +463,17 @@ class _FirstPageState extends State<FirstPage> {
                                   ),
                                 );
                               } else {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return const Center(
+                                          child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ));
+                                    });
+
                                 await produtosReq();
+                                Navigator.pop(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
