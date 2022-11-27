@@ -194,7 +194,10 @@ class _FirstPageState extends State<FirstPage> {
                 title: Text('STEIN', style: GoogleFonts.josefinSans()),
                 actions: [
                   IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.campaign)),
+                  IconButton(
                     onPressed: () {
+                      ind = [];
                       ind.addAll(listMesas);
                       ind.retainWhere(
                           (element) => element['ocupada'] == 'false');
@@ -209,7 +212,7 @@ class _FirstPageState extends State<FirstPage> {
                                 SizedBox(
                                   height: 70,
                                   child: ListTile(
-                                    leading: SizedBox(
+                                    leading: const SizedBox(
                                       height: 25,
                                     ),
                                     trailing: IconButton(
@@ -231,12 +234,12 @@ class _FirstPageState extends State<FirstPage> {
                                 ),
                                 Expanded(
                                   child: ListView.builder(
-                                    itemCount: mesas.length - mesasOcup.length,
+                                    itemCount: ind.length,
                                     itemBuilder: (context, index) {
                                       return InkWell(
                                         onTap: () async {
                                           var texto =
-                                              'Deseja ocupar a mesa ${ind[index + 1]['numero']} ?';
+                                              'Deseja ocupar a mesa ${ind[index]['numero']} ?';
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
@@ -259,19 +262,33 @@ class _FirstPageState extends State<FirstPage> {
                                                             'Cancelar')),
                                                     ElevatedButton(
                                                       onPressed: () async {
-                                                        await respondeChamado(
-                                                            mesas[index]);
-                                                        await updateRequest();
-                                                        return Future.delayed(
-                                                            const Duration(
-                                                                seconds: 1),
-                                                            () {
-                                                          setState(() {
-                                                            updateRequest();
-                                                          });
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return const Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .white,
+                                                              ));
+                                                            });
+
+                                                        await updateVenda();
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (BuildContext
+                                                                            context) =>
+                                                                        HomePage(
+                                                                          nmrMesa:
+                                                                              ind[index]['numero'].toString(),
+                                                                          ocup:
+                                                                              texto,
+                                                                        )));
                                                       },
                                                       child: const Text('Ok'),
                                                     ),
@@ -287,7 +304,7 @@ class _FirstPageState extends State<FirstPage> {
                                               const Icon(Icons.arrow_right),
                                           title: Text(
                                               //garcomChamado.contains
-                                              'Mesa ${ind[index + 1]['numero'].toString()} '),
+                                              'Mesa ${ind[index]['numero'].toString()} '),
                                         ),
                                       );
                                     },
@@ -472,7 +489,7 @@ class _FirstPageState extends State<FirstPage> {
                                       ));
                                     });
 
-                                await produtosReq();
+                                await updateVenda();
                                 Navigator.pop(context);
                                 Navigator.push(
                                     context,
@@ -482,7 +499,6 @@ class _FirstPageState extends State<FirstPage> {
                                               nmrMesa: mesas[index].toString(),
                                               ocup: texto,
                                             )));
-                                await updateVenda();
                               }
                             }),
                             child: SizedBox(

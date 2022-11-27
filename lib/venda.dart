@@ -31,15 +31,6 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-                onPressed: () async {
-                  await produtosReq();
-
-                  setState(() {
-                    produtosReq();
-                  });
-                },
-                icon: Icon(Icons.shopping_cart)),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: IconButton(

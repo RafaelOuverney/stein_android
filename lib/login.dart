@@ -227,6 +227,7 @@ class _LoginPageState extends State<LoginPage> {
 
                               await updateRequest();
                               await updateFuncionario();
+                              await produtosReq();
 
                               Navigator.pop(context);
 

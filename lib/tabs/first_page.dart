@@ -25,9 +25,9 @@ class _FirstTabState extends State<FirstTab> {
     separador = widget.tipoProd;
 
     setState(() {
-      //filter.retainWhere((Element) => Element['id'] == '1');
-      print(filter);
-      print(separador);
+      filter = [];
+      filter.addAll(produtosP);
+      filter.retainWhere((Element) => Element['id'] == separador);
     });
 
     return Scaffold(
@@ -35,53 +35,82 @@ class _FirstTabState extends State<FirstTab> {
         child: ListView.builder(
           itemCount: filter.length,
           itemBuilder: ((context, index) {
-            return ListTile(
-              title: Text('${filter[index]['nome']}'),
-              subtitle: Text('R\$ ${filter[index]['preco']}'),
-              leading: SizedBox(
-                  width: 100,
-                  child: Center(
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.network(
-                            '${filter[index]['imagem']}',
-                          )))),
-              trailing: Container(
-                width: 90,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: (() {
-                        setState(() {
-                          num--;
-                        });
-                      }),
-                      child: const Icon(
-                        CupertinoIcons.minus,
-                        color: Colors.white,
+            return InkWell(
+              onTap: (() {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Expanded(
+                      child: AlertDialog(
+                        title: const Text(
+                          'Detalhes do produto',
+                          style: TextStyle(color: Colors.blueAccent),
+                        ),
+                        content: Text('a'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              () {
+                                setState(() {});
+                                Navigator.pop(context);
+                              };
+                            },
+                            child: const Text('Ok'),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      '$num',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          num++;
-                        });
-                      },
-                      child: Icon(
-                        CupertinoIcons.plus,
-                        color: Colors.white,
+                    );
+                  },
+                );
+              }),
+              child: ListTile(
+                title: Text('${filter[index]['nome']}'),
+                subtitle: Text('R\$ ${filter[index]['preco']}'),
+                leading: SizedBox(
+                    width: 100,
+                    child: Center(
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.network(
+                              '${filter[index]['imagem']}',
+                            )))),
+                trailing: Container(
+                  width: 90,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurple,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: (() {
+                          setState(() {
+                            num--;
+                          });
+                        }),
+                        child: const Icon(
+                          CupertinoIcons.minus,
+                          color: Colors.white,
+                        ),
                       ),
-                    )
-                  ],
+                      Text(
+                        '$num',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            num++;
+                          });
+                        },
+                        child: Icon(
+                          CupertinoIcons.plus,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
