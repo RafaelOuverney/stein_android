@@ -209,58 +209,37 @@ class _FirstPageState extends State<FirstPage> {
                                         itemCount: garcomChamado.length,
                                         itemBuilder: (context, index) {
                                           return InkWell(
-                                            onTap: () async {
-                                              var texto =
-                                                  'Responder o chamado da mesa ${garcomChamado[index]}?';
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Expanded(
-                                                    child: AlertDialog(
-                                                      title: const Text(
-                                                        'Responder Chamado',
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .blueAccent),
-                                                      ),
-                                                      content: Text(texto),
-                                                      actions: [
-                                                        ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: const Text(
-                                                                'Cancelar')),
-                                                        ElevatedButton(
-                                                          onPressed: () async {
-                                                            await respondeChamado(
-                                                                mesasOcup[
-                                                                    index],
-                                                                garcomChamado[
-                                                                    0]);
-                                                            await updateRequest();
-                                                            return Future.delayed(
-                                                                const Duration(
-                                                                    seconds: 1),
-                                                                () {
-                                                              setState(() {
-                                                                updateRequest();
-                                                              });
-                                                              Navigator.pop(
-                                                                  context);
-                                                            });
-                                                          },
-                                                          child:
-                                                              const Text('Ok'),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
+                                            // onTap: () async {
+                                            //   var texto =
+                                            //       'Responder o chamado da mesa ${garcomChamado[index]}?';
+                                            //   showDialog(
+                                            //     context: context,
+                                            //     builder:
+                                            //         (BuildContext context) {
+                                            //       return Expanded(
+                                            //         child: AlertDialog(
+                                            //           title: const Text(
+                                            //             'Responder Chamado',
+                                            //             style: TextStyle(
+                                            //                 color: Colors
+                                            //                     .blueAccent),
+                                            //           ),
+                                            //           content: Text(texto),
+                                            //           actions: [
+                                            //             ElevatedButton(
+                                            //               onPressed: () async {
+                                            //                 Navigator.pop(
+                                            //                     context);
+                                            //               },
+                                            //               child:
+                                            //                   const Text('Ok'),
+                                            //             ),
+                                            //           ],
+                                            //         ),
+                                            //       );
+                                            //     },
+                                            //   );
+                                            // },
                                             child: ListTile(
                                               leading:
                                                   const Icon(Icons.table_bar),
