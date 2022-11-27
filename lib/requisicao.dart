@@ -3,11 +3,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:http/http.dart' as http;
 import 'package:stein/tabs/first_page.dart';
-import 'package:provider/provider.dart';
 
 import 'main.dart';
 
@@ -169,14 +166,15 @@ Future chamaToken(usuario, senha) async {
   }
 }
 
-Future respondeChamado(numeroMesa) async {
+Future respondeChamado(numeroMesaId, numeroMesa) async {
+  // ignore: unused_local_variable
   http.Response chamado = await http.put(
-      Uri.http(req.toString(), 'djangorestframeworkapi/Mesa/$numeroMesa/'),
+      Uri.http(req.toString(), 'djangorestframeworkapi/Mesa/$numeroMesaId/'),
       headers: {
         'Authorization': 'Token $tokenzinho',
         'Content-Type': 'application/json; charset=UTF-8'
       },
-      body: jsonEncode({'garcom': false, 'numero': numeroMesa}));
+      body: jsonEncode({'garcom': true, 'numero': numeroMesa}));
 }
 
 requisitaFuncao(site) async {
@@ -205,13 +203,12 @@ requisitaComandas() async {
     }
   }
 
+  // ignore: unused_local_variable
   var mesa = json.decode(utf8.decode(response.bodyBytes)) as List;
   var numemesa = [];
   numemesa.forEach((element) {
     numemesa.add(element['nmrMesa']);
   });
-
-  // print(valores);
 }
 
 requisitaPedidos(nummesa) async {
@@ -286,7 +283,6 @@ comandaProdutos(dadosProduto) async {
   }
   produtosPerComanda = dadosProduto;
   quantidadeProdutosPerComanda = produtosPerComanda.length;
-  print(quantidadeProdutosPerComanda);
 }
 
 Future produtosReq() async {
@@ -304,16 +300,13 @@ Future produtosReq() async {
       'nome': '${element['nome']}',
       'imagem': '${element['imagem']}',
       'preco': '${element['preco']}',
-      'id': '${element['tipoProduto']}'
+      'id': '${element['tipoProduto']}',
+      'descrição': '${element['descricao']}'
     };
 
     produtosP.add(dici);
   });
 
-  var produtoTipos =
-      produtosP.where((element) => element['id'] == '1').toList();
-
   filter.addAll(produtosP);
-  filter.retainWhere((Element) => Element['id'] == separador);
-  print(separador);
+  filter.retainWhere((element) => element['id'] == separador);
 }

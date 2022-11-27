@@ -1,10 +1,7 @@
-// ignore_for_file: must_be_immutable, use_build_context_synchronously
+// ignore_for_file: must_be_immutable, use_build_context_synchronously, body_might_complete_normally_nullable
 
-import 'dart:async';
 
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
 import 'package:stein/req.dart';
@@ -166,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                           hintText: 'Use seu CPF',
                         ),
                         validator: (value) {
+                          // ignore: unnecessary_null_comparison
                           if (value!.isEmpty || value == null) {
                             return 'Usuario é necessário';
                           } else if (value == 'admin') {
@@ -195,6 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ? Icons.visibility
                                     : Icons.visibility_off))),
                         validator: (value) {
+                          // ignore: unnecessary_null_comparison
                           if (value!.isEmpty || value == null) {
                             return 'Senha é necessário';
                           }

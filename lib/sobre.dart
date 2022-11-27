@@ -168,11 +168,11 @@ class _SobreState extends State<Sobre> {
                     child: Image.asset('lib/assets/logo.png'),
                   )),
               SizedBox(
-                height: 100,
+                height: 75,
                 child: Text(
-                  'STEIN',
+                  'STEIN FOOD',
                   style: GoogleFonts.josefinSans(
-                      textStyle: const TextStyle(fontSize: 38)),
+                      textStyle: const TextStyle(fontSize: 25)),
                 ),
               ),
             ],

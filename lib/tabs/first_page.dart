@@ -1,10 +1,9 @@
-import 'dart:convert';
+
+// ignore_for_file: must_be_immutable
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:stein/requisicao.dart';
-import 'package:http/http.dart' as http;
 
 int num = 0;
 List filter = [];
@@ -27,7 +26,7 @@ class _FirstTabState extends State<FirstTab> {
     setState(() {
       filter = [];
       filter.addAll(produtosP);
-      filter.retainWhere((Element) => Element['id'] == separador);
+      filter.retainWhere((element) => element['id'] == separador);
     });
 
     return Scaffold(
@@ -36,6 +35,7 @@ class _FirstTabState extends State<FirstTab> {
           itemCount: filter.length,
           itemBuilder: ((context, index) {
             return InkWell(
+              onLongPress: (() {}),
               onTap: (() {
                 showDialog(
                   context: context,
@@ -46,14 +46,17 @@ class _FirstTabState extends State<FirstTab> {
                           'Detalhes do produto',
                           style: TextStyle(color: Colors.blueAccent),
                         ),
-                        content: Text('a'),
+                        content: ListTile(
+                          title: Text(filter[index]['descrição'] == 'null'
+                              ? 'Sem Descrição'
+                              : '${filter[index]['descrição']}'),
+                          subtitle:
+                              Text('Preço: R\$ ${filter[index]['preco']}'),
+                        ),
                         actions: [
                           ElevatedButton(
                             onPressed: () async {
-                              () {
-                                setState(() {});
-                                Navigator.pop(context);
-                              };
+                              Navigator.pop(context);
                             },
                             child: const Text('Ok'),
                           ),
@@ -76,9 +79,9 @@ class _FirstTabState extends State<FirstTab> {
                             )))),
                 trailing: Container(
                   width: 90,
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                      color: Colors.deepPurple,
+                      color: Colors.blueGrey[800],
                       borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +99,7 @@ class _FirstTabState extends State<FirstTab> {
                       ),
                       Text(
                         '$num',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       InkWell(
                         onTap: () {
@@ -104,7 +107,7 @@ class _FirstTabState extends State<FirstTab> {
                             num++;
                           });
                         },
-                        child: Icon(
+                        child: const Icon(
                           CupertinoIcons.plus,
                           color: Colors.white,
                         ),

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
 
-import 'main.dart';
-
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
   String ocup = '';
@@ -34,7 +32,10 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.add_task)),
+                  onPressed: () {
+                    produtosReq();
+                  },
+                  icon: const Icon(Icons.add_task)),
             )
           ],
           toolbarHeight: 100,

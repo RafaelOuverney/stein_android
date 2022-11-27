@@ -1,5 +1,5 @@
-import 'dart:convert';
-import 'dart:ui';
+
+// ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,6 +20,12 @@ class _ComandasState extends State<Comandas> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+          )
+        ],
         toolbarHeight: 125,
         title: Text(
           'Comanda mesa: ${widget.nummesa}',
@@ -41,7 +47,7 @@ class _ComandasState extends State<Comandas> {
                     child: AlertDialog(
                       title: Text(
                         '${produtosPerComanda[index]['nome']}',
-                        style: TextStyle(color: Colors.blueAccent),
+                        style: const TextStyle(color: Colors.blueAccent),
                       ),
                       content: Text(
                           'Valor total dos produtos: R\$ ${widget.total.toStringAsFixed(2).replaceAll('.', ',')} '),

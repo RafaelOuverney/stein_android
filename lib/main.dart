@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_function_literals_in_foreach_calls
+// ignore_for_file: avoid_function_literals_in_foreach_calls, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -9,7 +9,6 @@ import 'package:stein/login.dart';
 import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
-import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
 var nominho = '';
@@ -33,7 +32,7 @@ class Myapp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Login(),
-      theme: ThemeData(useMaterial3: true, primarySwatch: Colors.deepPurple),
+      theme: ThemeData(useMaterial3: true, primarySwatch: Colors.blueGrey),
     );
   }
 }
@@ -53,7 +52,7 @@ class _FirstPageState extends State<FirstPage> {
           child: ListView(
             children: [
               ListTile(
-                leading: const Icon(Icons.arrow_back_ios_new_outlined),
+                leading: const Icon(Icons.arrow_back),
                 title: const Text('Voltar'),
                 onTap: () {
                   Navigator.pop(context);
@@ -63,12 +62,11 @@ class _FirstPageState extends State<FirstPage> {
                 accountName: Text(funcionarioNome),
                 accountEmail: Text(funcionarioFuncao),
                 currentAccountPicture: const CircleAvatar(
-                  child: Icon(Icons.person),
+                  child: Icon(
+                    Icons.person,
+                    size: 35,
+                  ),
                 ),
-              ),
-              ListTile(
-                title: Text('  Comandas', style: GoogleFonts.inter()),
-                onTap: (() async {}),
               ),
               ListTile(
                 title: Text('  Mesas Ocupadas', style: GoogleFonts.inter()),
@@ -99,27 +97,9 @@ class _FirstPageState extends State<FirstPage> {
                                 child: ListView.builder(
                                   itemCount: mesasOcup.length,
                                   itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                Comandas(
-                                              nummesa:
-                                                  mesasOcup[index].toString(),
-                                              valorTotal:
-                                                  'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: ListTile(
-                                        leading: const Icon(Icons.table_bar),
-                                        trailing: const Icon(Icons.arrow_right),
-                                        title: Text('Mesa ${mesasOcup[index]}'),
-                                      ),
+                                    return ListTile(
+                                      leading: const Icon(Icons.table_bar),
+                                      title: Text('Mesa ${mesasOcup[index]}'),
                                     );
                                   },
                                 ),
@@ -199,62 +179,101 @@ class _FirstPageState extends State<FirstPage> {
                             context: context,
                             builder: (context) {
                               return SizedBox(
-                                height: 300,
+                                height: 500,
                                 child: Column(
                                   children: [
-                                    const SizedBox(
-                                      height: 75,
+                                    SizedBox(
+                                      height: 50,
                                       child: Center(
-                                        child: Text(
-                                          'Menu',
-                                          style: TextStyle(fontSize: 25),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
+                                          child: ListTile(
+                                        leading: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.transparent,
+                                            )),
+                                        trailing: IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(Icons.close)),
+                                        title: const Center(
+                                            child: Text('Mesas Chamando')),
+                                      )),
                                     ),
                                     const Divider(
                                       thickness: 1.5,
                                     ),
                                     Expanded(
-                                        child: ListView(
-                                      children: <Widget>[
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        InkWell(
-                                          onTap: () {},
-                                          onLongPress: () {},
-                                          child: const SizedBox(
-                                            height: 85,
-                                            child: Center(
-                                                child: Text('Comandas',
-                                                    style: TextStyle(
-                                                        fontSize: 20))),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
+                                      child: ListView.builder(
+                                        itemCount: garcomChamado.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () async {
+                                              var texto =
+                                                  'Responder o chamado da mesa ${garcomChamado[index]}?';
+                                              showDialog(
+                                                context: context,
                                                 builder:
-                                                    (BuildContext context) =>
-                                                        Login(),
-                                              ),
-                                              (route) => false,
-                                            );
-                                          },
-                                          child: const SizedBox(
-                                            height: 85,
-                                            child: Center(
-                                                child: Text(
-                                              'Sair',
-                                              style: TextStyle(fontSize: 20),
-                                            )),
-                                          ),
-                                        ),
-                                      ],
-                                    ))
+                                                    (BuildContext context) {
+                                                  return Expanded(
+                                                    child: AlertDialog(
+                                                      title: const Text(
+                                                        'Responder Chamado',
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .blueAccent),
+                                                      ),
+                                                      content: Text(texto),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: const Text(
+                                                                'Cancelar')),
+                                                        ElevatedButton(
+                                                          onPressed: () async {
+                                                            await respondeChamado(
+                                                                mesasOcup[
+                                                                    index],
+                                                                garcomChamado[
+                                                                    0]);
+                                                            await updateRequest();
+                                                            return Future.delayed(
+                                                                const Duration(
+                                                                    seconds: 1),
+                                                                () {
+                                                              setState(() {
+                                                                updateRequest();
+                                                              });
+                                                              Navigator.pop(
+                                                                  context);
+                                                            });
+                                                          },
+                                                          child:
+                                                              const Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: ListTile(
+                                              leading:
+                                                  const Icon(Icons.table_bar),
+                                              trailing:
+                                                  const Icon(Icons.arrow_right),
+                                              title: Text(
+                                                  //garcomChamado.contains
+                                                  'Mesa ${garcomChamado[index]} '),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
@@ -276,11 +295,14 @@ class _FirstPageState extends State<FirstPage> {
                             child: Column(
                               children: [
                                 SizedBox(
-                                  height: 70,
+                                  height: 50,
                                   child: ListTile(
-                                    leading: const SizedBox(
-                                      height: 25,
-                                    ),
+                                    leading: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.transparent,
+                                        )),
                                     trailing: IconButton(
                                         onPressed: () {
                                           Navigator.pop(context);
@@ -290,7 +312,6 @@ class _FirstPageState extends State<FirstPage> {
                                       child: Text(
                                         'Mesas Livres',
                                         textAlign: TextAlign.center,
-                                        textScaleFactor: 1.5,
                                       ),
                                     ),
                                   ),
@@ -396,16 +417,16 @@ class _FirstPageState extends State<FirstPage> {
                         if (mesasOcup.isNotEmpty) {
                           for (var mesa in mesasOcup) {
                             if (garcomChamado.contains(mesas[index])) {
-                              cor = Color.fromARGB(255, 255, 196, 0);
+                              cor = const Color.fromARGB(255, 255, 196, 0);
                               texto = 'Ocupada';
                               break;
                             }
                             if (mesas[index] == mesa) {
-                              cor = Color.fromARGB(255, 156, 5, 0);
+                              cor = const Color.fromARGB(255, 156, 5, 0);
                               texto = 'Ocupada';
                               break;
                             } else {
-                              cor = Color.fromARGB(255, 0, 102, 15);
+                              cor = const Color.fromARGB(255, 0, 102, 15);
                             }
                           }
                         } else {
@@ -434,8 +455,14 @@ class _FirstPageState extends State<FirstPage> {
                                         content: Text(textoChamado),
                                         actions: [
                                           ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Cancelar')),
+                                          ElevatedButton(
                                             onPressed: () async {
                                               await respondeChamado(
+                                                  listMesas[index]['id'],
                                                   mesas[index]);
                                               await updateRequest();
                                               return Future.delayed(
@@ -526,7 +553,7 @@ class _FirstPageState extends State<FirstPage> {
                                               'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                               style: TextStyle(
                                                   color: cor ==
-                                                          Color.fromARGB(
+                                                          const Color.fromARGB(
                                                               255, 255, 196, 0)
                                                       ? Colors.black
                                                       : Colors.white),
@@ -609,7 +636,7 @@ class _FirstPageState extends State<FirstPage> {
                                         ),
                                         trailing: Icon(Icons.arrow_right,
                                             color: cor ==
-                                                    Color.fromARGB(
+                                                    const Color.fromARGB(
                                                         255, 255, 196, 0)
                                                 ? Colors.black
                                                 : Colors.white),
@@ -617,7 +644,7 @@ class _FirstPageState extends State<FirstPage> {
                                           'Mesa ${mesas[index]}',
                                           style: TextStyle(
                                               color: cor ==
-                                                      Color.fromARGB(
+                                                      const Color.fromARGB(
                                                           255, 255, 196, 0)
                                                   ? Colors.black
                                                   : Colors.white),
@@ -630,8 +657,12 @@ class _FirstPageState extends State<FirstPage> {
                                                 'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                                 style: TextStyle(
                                                     color: cor ==
-                                                            Color.fromARGB(255,
-                                                                255, 196, 0)
+                                                            const Color
+                                                                    .fromARGB(
+                                                                255,
+                                                                255,
+                                                                196,
+                                                                0)
                                                         ? Colors.black
                                                         : Colors.white),
                                               ),
@@ -665,9 +696,3 @@ Future<void> updateFuncionario() async {
 Future<void> updateComanda() async {
   await HttpRequest().reqHTTP('Comanda/');
 }
-
-// Future<void> refreshRequest() async {
-//   await HttpRequest().reqHTTP('Mesa/');
-//   await Future.delayed(const Duration(seconds: 10));
-//   refreshRequest();
-// }

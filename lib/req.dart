@@ -49,7 +49,7 @@ class RqState extends State<Rq> {
                             label: 'Ok',
                             textColor: Colors.redAccent,
                             onPressed: () {
-                              print(req);
+                            
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -67,7 +67,7 @@ class RqState extends State<Rq> {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               }),
-              icon: Icon(Icons.save))
+              icon: const Icon(Icons.save))
         ],
       ),
       body: SafeArea(
@@ -111,6 +111,7 @@ class RqState extends State<Rq> {
                       preferences.setString('ip', value);
                       req = preferences.getString('ip');
                     }
+                    return null;
                   },
                 ),
               ),
