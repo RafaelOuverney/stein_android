@@ -194,7 +194,73 @@ class _FirstPageState extends State<FirstPage> {
                 title: Text('STEIN', style: GoogleFonts.josefinSans()),
                 actions: [
                   IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.campaign)),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return SizedBox(
+                                height: 300,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 75,
+                                      child: Center(
+                                        child: Text(
+                                          'Menu',
+                                          style: TextStyle(fontSize: 25),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(
+                                      thickness: 1.5,
+                                    ),
+                                    Expanded(
+                                        child: ListView(
+                                      children: <Widget>[
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        InkWell(
+                                          onTap: () {},
+                                          onLongPress: () {},
+                                          child: const SizedBox(
+                                            height: 85,
+                                            child: Center(
+                                                child: Text('Comandas',
+                                                    style: TextStyle(
+                                                        fontSize: 20))),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Login(),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          },
+                                          child: const SizedBox(
+                                            height: 85,
+                                            child: Center(
+                                                child: Text(
+                                              'Sair',
+                                              style: TextStyle(fontSize: 20),
+                                            )),
+                                          ),
+                                        ),
+                                      ],
+                                    ))
+                                  ],
+                                ),
+                              );
+                            });
+                      },
+                      icon: const Icon(Icons.campaign)),
                   IconButton(
                     onPressed: () {
                       ind = [];
@@ -318,74 +384,6 @@ class _FirstPageState extends State<FirstPage> {
                     },
                     icon: const Icon(Icons.table_bar_outlined),
                     tooltip: 'Mesas Livres',
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return SizedBox(
-                              height: 300,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 75,
-                                    child: Center(
-                                      child: Text(
-                                        'Menu',
-                                        style: TextStyle(fontSize: 25),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                  const Divider(
-                                    thickness: 1.5,
-                                  ),
-                                  Expanded(
-                                      child: ListView(
-                                    children: <Widget>[
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      InkWell(
-                                        onTap: () {},
-                                        onLongPress: () {},
-                                        child: const SizedBox(
-                                          height: 85,
-                                          child: Center(
-                                              child: Text('Comandas',
-                                                  style:
-                                                      TextStyle(fontSize: 20))),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Login(),
-                                            ),
-                                            (route) => false,
-                                          );
-                                        },
-                                        child: const SizedBox(
-                                          height: 85,
-                                          child: Center(
-                                              child: Text(
-                                            'Sair',
-                                            style: TextStyle(fontSize: 20),
-                                          )),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            );
-                          });
-                    },
-                    icon: const Icon(Icons.more_vert_rounded),
                   ),
                 ],
               ),
