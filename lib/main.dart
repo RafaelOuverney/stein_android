@@ -353,8 +353,8 @@ class _FirstPageState extends State<FirstPage> {
                                                                         HomePage(
                                                                           nmrMesa:
                                                                               ind[index]['numero'].toString(),
-                                                                          ocup:
-                                                                              texto,
+                                                                          idmesa:
+                                                                              ind[index]['id'],
                                                                         )));
                                                       },
                                                       child: const Text('Ok'),
@@ -478,7 +478,9 @@ class _FirstPageState extends State<FirstPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (BuildContext context) => Comandas(
-                                      nummesa: mesas[index].toString(),
+                                      idmesa: listMesas[index]['id'],
+                                      nummesa:
+                                          listMesas[index]['numero'].toString(),
                                       valorTotal:
                                           'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
                                     ),
@@ -503,8 +505,10 @@ class _FirstPageState extends State<FirstPage> {
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
                                             HomePage(
-                                              nmrMesa: mesas[index].toString(),
-                                              ocup: texto,
+                                              nmrMesa: listMesas[index]
+                                                      ['numero']
+                                                  .toString(),
+                                              idmesa: listMesas[index]['id'],
                                             )));
                               }
                             }),
@@ -586,6 +590,7 @@ class _FirstPageState extends State<FirstPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) => Comandas(
+                                    idmesa: listMesas[index]['id'],
                                     nummesa: mesas[index].toString(),
                                     valorTotal:
                                         'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
@@ -598,8 +603,9 @@ class _FirstPageState extends State<FirstPage> {
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           HomePage(
-                                            nmrMesa: mesas[index].toString(),
-                                            ocup: texto,
+                                            nmrMesa: listMesas[index]['numero']
+                                                .toString(),
+                                            idmesa: listMesas[index]['id'],
                                           )));
                               await updateVenda();
                             }

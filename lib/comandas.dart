@@ -1,15 +1,21 @@
-
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/requisicao.dart';
+import 'package:stein/tabs/first_page.dart';
+import 'package:stein/venda.dart';
 
 class Comandas extends StatefulWidget {
   var nummesa = '';
   var valorTotal = '';
   double total = 0;
-  Comandas({super.key, required this.nummesa, required this.valorTotal});
+  var idmesa = '';
+  Comandas(
+      {super.key,
+      required this.nummesa,
+      required this.valorTotal,
+      required this.idmesa});
 
   @override
   State<Comandas> createState() => _ComandasState();
@@ -18,12 +24,25 @@ class Comandas extends StatefulWidget {
 class _ComandasState extends State<Comandas> {
   @override
   Widget build(BuildContext context) {
+    listaProd = [];
     return Scaffold(
       appBar: AppBar(
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+            child: IconButton(
+                onPressed: () {
+                  filter.addAll(produtosPerComanda);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HomePage(
+                                nmrMesa: widget.nummesa,
+                                idmesa: widget.idmesa,
+                              )));
+                  print(listaProd);
+                },
+                icon: const Icon(Icons.add)),
           )
         ],
         toolbarHeight: 125,

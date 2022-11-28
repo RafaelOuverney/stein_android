@@ -134,7 +134,7 @@ class HttpRequest extends State<RequisicaoHttp> {
       funcionarioNome =
           dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
 
-      funcionarioId = dadosUser[0]['id'];
+      //funcionarioId = dadosUser[0]['id'];
 
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
@@ -313,4 +313,20 @@ Future produtosReq() async {
 
   filter.addAll(produtosP);
   filter.retainWhere((element) => element['id'] == separador);
+}
+
+Future fazPedido(produtos, idMesa, idFuncionario) async {
+  http.Response resposta = await http.post(
+    Uri.http(req.toString(), '/djangorestframeworkapi/Comanda/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenzinho'
+    },
+    body: jsonEncode(<String, String>{
+      'produtos': '$produtos',
+      'idMesa': '$idMesa',
+      'idFuncionario': '$idFuncionario'
+    }),
+  );
+  print('bom dia');
 }

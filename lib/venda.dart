@@ -7,13 +7,14 @@ import 'package:stein/tabs/first_page.dart';
 
 class HomePage extends StatefulWidget {
   String nmrMesa = '';
-  String ocup = '';
+
   String prodId = '';
+  var idmesa = '';
 
   HomePage({
     super.key,
     required this.nmrMesa,
-    required this.ocup,
+    required this.idmesa,
   });
 
   @override
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(
                             builder: (BuildContext context) => ConfirmaComanda(
                                   mesa: widget.nmrMesa,
+                                  idmesa: '1',
                                 )));
                   },
                   icon: const Icon(Icons.add_task)),
