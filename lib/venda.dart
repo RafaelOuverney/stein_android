@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:stein/requisicao.dart';
+import 'package:stein/tabs/confirmaComanda.dart';
 import 'package:stein/tabs/first_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,7 +34,12 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(5.0),
               child: IconButton(
                   onPressed: () {
-                    produtosReq();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => ConfirmaComanda(
+                                  mesa: widget.nmrMesa,
+                                )));
                   },
                   icon: const Icon(Icons.add_task)),
             )
@@ -63,6 +69,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: TabBarView(
+                      physics:
+                          const NeverScrollableScrollPhysics(), //NeverScrollableScrollPhysics(),
                       children: [
                         for (int t = 0; t < tipoTamanho; t++)
                           FirstTab(tipoProd: '${tipo[t]['id']}'),

@@ -31,6 +31,7 @@ var comandas = [];
 var produtosPerComanda = [];
 var quantidadeProdutosPerComanda = 0;
 var produtosP = [];
+var funcionarioId = '';
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -133,6 +134,8 @@ class HttpRequest extends State<RequisicaoHttp> {
       funcionarioNome =
           dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
 
+      funcionarioId = dadosUser[0]['id'];
+
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
     } else {
@@ -174,7 +177,7 @@ Future respondeChamado(numeroMesaId, numeroMesa) async {
         'Authorization': 'Token $tokenzinho',
         'Content-Type': 'application/json; charset=UTF-8'
       },
-      body: jsonEncode({'garcom': true, 'numero': numeroMesa}));
+      body: jsonEncode({'garcom': false, 'numero': numeroMesa}));
 }
 
 requisitaFuncao(site) async {
@@ -296,12 +299,13 @@ Future produtosReq() async {
   var produtosPp = json.decode(utf8.decode(response.bodyBytes)) as List;
 
   produtosPp.forEach((element) {
-    var dici = <String, String>{
+    var dici = {
       'nome': '${element['nome']}',
       'imagem': '${element['imagem']}',
       'preco': '${element['preco']}',
       'id': '${element['tipoProduto']}',
-      'descrição': '${element['descricao']}'
+      'descrição': '${element['descricao']}',
+      'quantidade': 0
     };
 
     produtosP.add(dici);

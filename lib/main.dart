@@ -9,6 +9,7 @@ import 'package:stein/login.dart';
 import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
+import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
 var nominho = '';
@@ -494,6 +495,8 @@ class _FirstPageState extends State<FirstPage> {
                                     });
 
                                 await updateVenda();
+                                await produtosReq();
+                                listaProd = [];
                                 Navigator.pop(context);
                                 Navigator.push(
                                     context,
