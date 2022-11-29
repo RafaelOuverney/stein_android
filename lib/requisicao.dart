@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:stein/tabs/confirmaComanda.dart';
 import 'package:stein/tabs/first_page.dart';
 
 import 'main.dart';
@@ -323,8 +324,11 @@ Future fazPedido(produtos, idMesa) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $tokenzinho'
     },
-    body: jsonEncode(
-        {'produtos': produtos, 'idMesa': '$idMesa', 'idFuncionario': funcID}),
+    body: jsonEncode({
+      'produtos': produtos,
+      'idMesa': '$idMesa',
+      'idFuncionario': funcID,
+      'observacao': comentario
+    }),
   );
-  print(funcID);
 }

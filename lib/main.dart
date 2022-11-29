@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,7 @@ var textoChamado = '';
 var contemGarcom = '';
 var valor = [];
 var ind = [];
+bool semrede = false;
 
 void main() async {
   runApp(const Myapp());
@@ -495,21 +497,58 @@ class _FirstPageState extends State<FirstPage> {
                                         color: Colors.white,
                                       ));
                                     });
+                                try {
+                                  await updateVenda();
+                                  await produtosReq();
+                                } on SocketException catch (_) {
+                                  semrede = true;
+                                }
+                                if (semrede == true) {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Expanded(
+                                        child: AlertDialog(
+                                          title: Text(
+                                            'Erro de conexão',
+                                            style: TextStyle(
+                                                color: Colors.red[800]),
+                                          ),
+                                          content: const Text(
+                                              'Verifique sua conexão com o servidor e tente novamente'),
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Ok',
+                                                style: TextStyle(
+                                                    color: Colors.grey[800]),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
 
-                                await updateVenda();
-                                await produtosReq();
-                                listaProd = [];
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            HomePage(
-                                              nmrMesa: listMesas[index]
-                                                      ['numero']
-                                                  .toString(),
-                                              idmesa: listMesas[index]['id'],
-                                            )));
+                                  semrede = false;
+                                } else {
+                                  listaProd = [];
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              HomePage(
+                                                nmrMesa: listMesas[index]
+                                                        ['numero']
+                                                    .toString(),
+                                                idmesa: listMesas[index]['id'],
+                                              )));
+                                }
                               }
                             }),
                             child: SizedBox(

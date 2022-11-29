@@ -1,17 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
-import 'package:stein/tabs/observacoes.dart';
+
 import 'package:stein/venda.dart';
+
+var comentario = '  ';
 
 class ConfirmaComanda extends StatefulWidget {
   var mesa = '';
   var dici = [];
   var idmesa = '';
-  var comentario = [];
+
   ConfirmaComanda({super.key, required this.mesa, required this.idmesa});
 
   @override
@@ -19,6 +23,7 @@ class ConfirmaComanda extends StatefulWidget {
 }
 
 class _ConfirmaComandaState extends State<ConfirmaComanda> {
+  final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,15 +59,20 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
                     'Alguma Observação?',
                     style: TextStyle(color: Colors.blueAccent),
                   ),
-                  content: TextFormField(
-                    validator: (value) {
-                      // comentario = [
-                      //   {'comentario : ${value}'}
-                      // ];
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: null,
+                  content: Form(
+                    key: formkey,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty || value == null) {
+                          comentario = 'null';
+                        }
+
+                        comentario = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: null,
+                    ),
                   ),
                   actions: [
                     ElevatedButton(
@@ -76,23 +86,40 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const Center(
-                                  child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ));
-                            });
+                        if (formkey.currentState!.validate()) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ));
+                              });
+                          try {
+                            await fazPedido(
+                              listaProd,
+                              widget.idmesa,
+                            ).timeout(Duration(seconds: 15));
+                          } on SocketException catch (_) {
+                            return print('bão?');
+                          }
 
-                        // Navigator.pushAndRemoveUntil(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (BuildContext context) =>
-                        //         const FirstPage(),
-                        //   ),
-                        //   (route) => false,
-                        // );
+                          await updateRequest();
+                          Navigator.pop(context);
+
+                          setState(() {
+                            updateRequest();
+                          });
+
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const FirstPage(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       },
                       child: Text(
                         'Finalizar',
