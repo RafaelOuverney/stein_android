@@ -31,7 +31,7 @@ var comandas = [];
 var produtosPerComanda = [];
 var quantidadeProdutosPerComanda = 0;
 var produtosP = [];
-var funcionarioId = '';
+var funcID = '';
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -134,7 +134,7 @@ class HttpRequest extends State<RequisicaoHttp> {
       funcionarioNome =
           dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
 
-      //funcionarioId = dadosUser[0]['id'];
+      funcID = dadosUser[0]['url'];
 
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
@@ -304,6 +304,7 @@ Future produtosReq() async {
       'imagem': '${element['imagem']}',
       'preco': '${element['preco']}',
       'id': '${element['tipoProduto']}',
+      'idProduto': '${element['id']}',
       'descrição': '${element['descricao']}',
       'quantidade': 0
     };
@@ -315,18 +316,15 @@ Future produtosReq() async {
   filter.retainWhere((element) => element['id'] == separador);
 }
 
-Future fazPedido(produtos, idMesa, idFuncionario) async {
+Future fazPedido(produtos, idMesa) async {
   http.Response resposta = await http.post(
     Uri.http(req.toString(), '/djangorestframeworkapi/Comanda/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $tokenzinho'
     },
-    body: jsonEncode(<String, String>{
-      'produtos': '$produtos',
-      'idMesa': '$idMesa',
-      'idFuncionario': '$idFuncionario'
-    }),
+    body: jsonEncode(
+        {'produtos': produtos, 'idMesa': '$idMesa', 'idFuncionario': funcID}),
   );
-  print('bom dia');
+  print(funcID);
 }

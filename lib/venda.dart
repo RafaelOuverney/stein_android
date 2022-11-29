@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(
                             builder: (BuildContext context) => ConfirmaComanda(
                                   mesa: widget.nmrMesa,
-                                  idmesa: '1',
+                                  idmesa: widget.idmesa,
                                 )));
                   },
                   icon: const Icon(Icons.add_task)),
