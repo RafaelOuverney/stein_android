@@ -35,15 +35,22 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(5.0),
               child: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => ConfirmaComanda(
-                                  mesa: widget.nmrMesa,
-                                  idmesa: widget.idmesa,
-                                )));
+                    if (listaProd.isEmpty) {
+                      print(listaProd);
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ConfirmaComanda(
+                                    mesa: widget.nmrMesa,
+                                    idmesa: widget.idmesa,
+                                  )));
+                    }
                   },
-                  icon: const Icon(Icons.add_task)),
+                  icon: const Icon(
+                    Icons.add_task,
+                  )),
             )
           ],
           toolbarHeight: 100,

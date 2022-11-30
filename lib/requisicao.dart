@@ -57,6 +57,7 @@ class RequisicaoHttp extends StatefulWidget {
 
 class HttpRequest extends State<RequisicaoHttp> {
   final parametrosDeBusca = {'usuario': nominho};
+
   Future<void> reqHTTP(site) async {
     var url = Uri.http(req.toString(), 'djangorestframeworkapi/$site');
 
@@ -259,6 +260,7 @@ produtosPorComanda() async {
 }
 
 comandaProdutos(dadosProduto) async {
+  produtosPerComanda = [];
   var parametros = {'comanda': comandas[0].toString()};
 
   var url = Uri.http(
@@ -280,12 +282,10 @@ comandaProdutos(dadosProduto) async {
     for (var i = 0; i < list.length; i++) {
       if (dadosProduto[c]['id'].toString() == list[i]['produto'].toString()) {
         dadosProduto[c]['quantidade'] = list[i]['quantidade'];
-
-        break;
       }
     }
   }
-  produtosPerComanda = dadosProduto;
+  produtosPerComanda.addAll(dadosProduto);
   quantidadeProdutosPerComanda = produtosPerComanda.length;
 }
 

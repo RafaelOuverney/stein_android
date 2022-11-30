@@ -148,8 +148,8 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
             RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15)))),
         notchMargin: 5,
-        child: Container(
-          height: 40,
+        child: ListTile(
+          leading: Text('Total: R\$ ${somaValorTotal().toStringAsFixed(2)}'),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -157,4 +157,12 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
       resizeToAvoidBottomInset: true,
     );
   }
+}
+
+somaValorTotal() {
+  var valorTotalProd = 0.0;
+  listaProd.forEach((element) {
+    valorTotalProd += double.parse(element['preco']) * element['quantidade'];
+  });
+  return valorTotalProd;
 }

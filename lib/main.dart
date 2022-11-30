@@ -116,12 +116,6 @@ class _FirstPageState extends State<FirstPage> {
                 }),
               ),
               ListTile(
-                title: Text('  Meus Dados', style: GoogleFonts.inter()),
-                onTap: (() async {
-                  await HttpRequest().reqHTTP('Funcionarios/');
-                }),
-              ),
-              ListTile(
                 title: Text('  Sobre', style: GoogleFonts.inter()),
                 onTap: (() {
                   Navigator.pop(context);
@@ -472,7 +466,7 @@ class _FirstPageState extends State<FirstPage> {
                                         color: Colors.white,
                                       ));
                                     });
-
+                                produtosPerComanda = [];
                                 await requisitaPedidos(listMesas[index]["id"]);
                                 updateComanda();
                                 Navigator.pop(context);
@@ -489,6 +483,7 @@ class _FirstPageState extends State<FirstPage> {
                                   ),
                                 );
                               } else {
+                                produtosPerComanda = [];
                                 showDialog(
                                     context: context,
                                     builder: (context) {

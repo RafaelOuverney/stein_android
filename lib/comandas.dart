@@ -31,7 +31,8 @@ class _ComandasState extends State<Comandas> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  await produtosReq();
                   filter.addAll(produtosPerComanda);
                   Navigator.push(
                       context,

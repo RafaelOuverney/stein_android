@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously, body_might_complete_normally_nullable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
@@ -218,7 +220,11 @@ class _LoginPageState extends State<LoginPage> {
                                     color: Colors.white,
                                   ));
                                 });
-                            await chamaToken(nominho, senhinha);
+                            try {
+                              await chamaToken(nominho, senhinha);
+                            } on SocketException catch (_) {
+                              print('a');
+                            }
 
                             if (tokenzinho != 'invalido') {
                               await HttpRequest().reqHTTP('Funcionarios/');

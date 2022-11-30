@@ -28,7 +28,19 @@ class _FirstTabState extends State<FirstTab> {
       filter = [];
       filter.addAll(produtosP);
       filter.retainWhere((element) => element['id'] == separador);
+      filter.forEach((el1) {
+        produtosPerComanda.forEach((el2) {
+          if (el1['idProduto'] == el2['id']) {
+            el1['quantidade'] = el2['quantidade'];
+          }
+        });
+      });
+      if (produtosPerComanda.isNotEmpty) {
+        listaProd.addAll(produtosPerComanda);
+      }
     });
+
+    print(filter);
 
     return Scaffold(
       body: SafeArea(
