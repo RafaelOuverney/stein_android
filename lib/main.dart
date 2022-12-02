@@ -19,6 +19,7 @@ var contemGarcom = '';
 var valor = [];
 var ind = [];
 bool semrede = false;
+var respostaChamadoComanda = [];
 
 void main() async {
   runApp(const Myapp());
@@ -206,37 +207,77 @@ class _FirstPageState extends State<FirstPage> {
                                         itemCount: garcomChamado.length,
                                         itemBuilder: (context, index) {
                                           return InkWell(
-                                            // onTap: () async {
-                                            //   var texto =
-                                            //       'Responder o chamado da mesa ${garcomChamado[index]}?';
-                                            //   showDialog(
-                                            //     context: context,
-                                            //     builder:
-                                            //         (BuildContext context) {
-                                            //       return Expanded(
-                                            //         child: AlertDialog(
-                                            //           title: const Text(
-                                            //             'Responder Chamado',
-                                            //             style: TextStyle(
-                                            //                 color: Colors
-                                            //                     .blueAccent),
-                                            //           ),
-                                            //           content: Text(texto),
-                                            //           actions: [
-                                            //             ElevatedButton(
-                                            //               onPressed: () async {
-                                            //                 Navigator.pop(
-                                            //                     context);
-                                            //               },
-                                            //               child:
-                                            //                   const Text('Ok'),
-                                            //             ),
-                                            //           ],
-                                            //         ),
-                                            //       );
-                                            //     },
-                                            //   );
-                                            // },
+                                            onTap: () {
+                                              respostaChamadoComanda = [];
+                                              respostaChamadoComanda
+                                                  .addAll(listMesas);
+                                              respostaChamadoComanda
+                                                  .retainWhere((element) =>
+                                                      element['numero'] ==
+                                                      garcomChamado[index]
+                                                          .toString());
+                                              print(respostaChamadoComanda[0]
+                                                  ['id']);
+
+                                              var texto =
+                                                  'Responder o chamado da mesa ${garcomChamado[index]}?';
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Expanded(
+                                                    child: AlertDialog(
+                                                      title: const Text(
+                                                        'Responder Chamado',
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .blueAccent),
+                                                      ),
+                                                      content: Text(texto),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () async {
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return const Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ));
+                                                                });
+
+                                                            await respondeChamado(
+                                                                respostaChamadoComanda[
+                                                                    0]['id'],
+                                                                respostaChamadoComanda[
+                                                                        0]
+                                                                    ['numero']);
+                                                            await updateRequest();
+                                                            setState(() {
+                                                              updateRequest();
+                                                            });
+
+                                                            Navigator.pop(
+                                                                context);
+
+                                                            Navigator.pop(
+                                                                context);
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child:
+                                                              const Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
                                             child: ListTile(
                                               leading:
                                                   const Icon(Icons.table_bar),
