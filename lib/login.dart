@@ -221,54 +221,86 @@ class _LoginPageState extends State<LoginPage> {
                                   ));
                                 });
                             try {
-                              await chamaToken(nominho, senhinha);
-                            } on SocketException catch (_) {
-                              print('a');
+                              await chamaToken(nominho, senhinha)
+                                  .timeout(Duration(seconds: 5));
+                            } on Exception catch (_) {
+                              semrede = true;
                             }
-
-                            if (tokenzinho != 'invalido') {
-                              await HttpRequest().reqHTTP('Funcionarios/');
-
-                              await updateRequest();
-                              await updateFuncionario();
-                              await produtosReq();
-
-                              Navigator.pop(context);
-
-                              // refreshRequest();
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const FirstPage(),
-                                ),
-                                (route) => false,
-                              );
-                            } else {
+                            if (semrede == true) {
                               Navigator.pop(context);
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return Expanded(
                                     child: AlertDialog(
-                                      title: const Text(
-                                        'Erro',
-                                        style: TextStyle(color: Colors.red),
+                                      title: Text(
+                                        'Erro de conexão',
+                                        style:
+                                            TextStyle(color: Colors.red[800]),
                                       ),
                                       content: const Text(
-                                          'Usuário ou senha incorretos.'),
+                                          'Verifique sua conexão com o servidor e tente novamente'),
                                       actions: [
                                         ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             Navigator.pop(context);
                                           },
-                                          child: const Text('Ok'),
+                                          child: Text(
+                                            'Ok',
+                                            style: TextStyle(
+                                                color: Colors.grey[800]),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   );
                                 },
                               );
+                            } else {
+                              if (tokenzinho != 'invalido') {
+                                await HttpRequest().reqHTTP('Funcionarios/');
+
+                                await updateRequest();
+                                await updateFuncionario();
+                                await produtosReq();
+
+                                Navigator.pop(context);
+
+                                // refreshRequest();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const FirstPage(),
+                                  ),
+                                  (route) => false,
+                                );
+                              } else {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Expanded(
+                                      child: AlertDialog(
+                                        title: const Text(
+                                          'Erro',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        content: const Text(
+                                            'Usuário ou senha incorretos.'),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
                             }
                           }
                         },

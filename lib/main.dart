@@ -565,21 +565,59 @@ class _FirstPageState extends State<FirstPage> {
                                       ));
                                     });
                                 produtosPerComanda = [];
-                                await requisitaPedidos(listMesas[index]["id"]);
-                                updateComanda();
-                                Navigator.pop(context);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => Comandas(
-                                      idmesa: listMesas[index]['id'],
-                                      nummesa:
-                                          listMesas[index]['numero'].toString(),
-                                      valorTotal:
-                                          'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                try {
+                                  await requisitaPedidos(listMesas[index]["id"])
+                                      .timeout(Duration(seconds: 5));
+                                  updateComanda();
+                                } on Exception catch (_) {
+                                  semrede = true;
+                                }
+                                if (semrede == true) {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Expanded(
+                                        child: AlertDialog(
+                                          title: Text(
+                                            'Erro de conexão',
+                                            style: TextStyle(
+                                                color: Colors.red[800]),
+                                          ),
+                                          content: const Text(
+                                              'Verifique sua conexão com o servidor e tente novamente'),
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Ok',
+                                                style: TextStyle(
+                                                    color: Colors.grey[800]),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Comandas(
+                                        idmesa: listMesas[index]['id'],
+                                        nummesa: listMesas[index]['numero']
+                                            .toString(),
+                                        valorTotal:
+                                            'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
                               } else {
                                 produtosPerComanda = [];
                                 showDialog(
@@ -591,10 +629,12 @@ class _FirstPageState extends State<FirstPage> {
                                       ));
                                     });
                                 try {
-                                  await updateVenda();
-                                  await produtosReq();
+                                  await updateVenda()
+                                      .timeout(Duration(seconds: 5));
+                                  await produtosReq()
+                                      .timeout(Duration(seconds: 5));
                                   metodoo = 'POST';
-                                } on SocketException catch (_) {
+                                } on Exception catch (_) {
                                   semrede = true;
                                 }
                                 if (semrede == true) {
