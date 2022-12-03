@@ -33,6 +33,7 @@ var produtosPerComanda = [];
 var quantidadeProdutosPerComanda = 0;
 var produtosP = [];
 var funcID = '';
+var idCumanda = 0;
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -78,7 +79,7 @@ class HttpRequest extends State<RequisicaoHttp> {
       var list = json.decode(utf8.decode(response.bodyBytes)) as List;
 
       list.forEach((element) {
-        var dict = <String, String>{
+        var dict = {
           'id': '${element["id"]}',
           'numero': '${element["numero"]}',
           'ocupada': '${element["ocupada"]}',
@@ -137,6 +138,7 @@ class HttpRequest extends State<RequisicaoHttp> {
           dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
 
       funcID = dadosUser[0]['url'];
+      print(dadosUser);
 
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
@@ -247,11 +249,12 @@ produtosPorComanda() async {
 
     var produtosDetalhes = json.decode(utf8.decode(response.bodyBytes)) as List;
     produtosDetalhes.forEach((element) {
-      var dict = <String, String>{
+      var dict = {
         'nome': '${element["nome"]}',
         'preco': '${element["preco"]}',
         'id': '${element['id']}',
-        'imagem': '${element['imagem']}'
+        'imagem': '${element['imagem']}',
+        'quantidade': 0
       };
       lista.add(dict);
     });
@@ -262,6 +265,7 @@ produtosPorComanda() async {
 comandaProdutos(dadosProduto) async {
   produtosPerComanda = [];
   var parametros = {'comanda': comandas[0].toString()};
+  idCumanda = comandas[0];
 
   var url = Uri.http(
       req.toString(), 'djangorestframeworkapi/ComandaProduto/', parametros);
@@ -271,13 +275,14 @@ comandaProdutos(dadosProduto) async {
   var quantidadeProdutos = json.decode(utf8.decode(response.bodyBytes)) as List;
   var list = [];
   quantidadeProdutos.forEach((element) {
-    var dict = <String, String>{
+    var dict = {
       'produto': '${element["produto"]}',
-      'quantidade': '${element["quantidade"]}'
+      'quantidade': element['quantidade']
     };
-    list.add(dict);
-  });
 
+    list.add(dict);
+    // print(list);
+  });
   for (var c = 0; c < dadosProduto.length; c++) {
     for (var i = 0; i < list.length; i++) {
       if (dadosProduto[c]['id'].toString() == list[i]['produto'].toString()) {
@@ -317,7 +322,7 @@ Future produtosReq() async {
   filter.retainWhere((element) => element['id'] == separador);
 }
 
-Future fazPedido(produtos, idMesa) async {
+Future fazPedido(produtos, idMesa, metodo) async {
   http.Response resposta = await http.post(
     Uri.http(req.toString(), '/djangorestframeworkapi/Comanda/'),
     headers: <String, String>{
@@ -328,7 +333,8 @@ Future fazPedido(produtos, idMesa) async {
       'produtos': produtos,
       'idMesa': '$idMesa',
       'idFuncionario': funcID,
-      'observacao': comentario
+      'observacao': comentario,
+      'metodo': metodo
     }),
   );
 }

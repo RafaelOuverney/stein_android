@@ -10,6 +10,7 @@ import 'package:stein/login.dart';
 import 'package:stein/req.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/sobre.dart';
+import 'package:stein/tabs/confirmaComanda.dart';
 import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
@@ -20,6 +21,7 @@ var valor = [];
 var ind = [];
 bool semrede = false;
 var respostaChamadoComanda = [];
+var abreMesaOcupada = [];
 
 void main() async {
   runApp(const Myapp());
@@ -101,9 +103,35 @@ class _FirstPageState extends State<FirstPage> {
                                 child: ListView.builder(
                                   itemCount: mesasOcup.length,
                                   itemBuilder: (context, index) {
-                                    return ListTile(
-                                      leading: const Icon(Icons.table_bar),
-                                      title: Text('Mesa ${mesasOcup[index]}'),
+                                    return InkWell(
+                                      onTap: () async {
+                                        abreMesaOcupada = [];
+                                        abreMesaOcupada.addAll(listMesas);
+                                        abreMesaOcupada.retainWhere((element) =>
+                                            element['numero'] ==
+                                            mesasOcup[index].toString());
+                                        await requisitaPedidos(
+                                            abreMesaOcupada[0]['id']);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    Comandas(
+                                                        nummesa:
+                                                            abreMesaOcupada[0]
+                                                                ['numero'],
+                                                        valorTotal:
+                                                            abreMesaOcupada[0]
+                                                                ['valorTotal'],
+                                                        idmesa:
+                                                            abreMesaOcupada[0]
+                                                                ['id'])));
+                                      },
+                                      child: ListTile(
+                                        leading: const Icon(Icons.table_bar),
+                                        title: Text('Mesa ${mesasOcup[index]}'),
+                                      ),
                                     );
                                   },
                                 ),
@@ -203,93 +231,107 @@ class _FirstPageState extends State<FirstPage> {
                                       thickness: 1.5,
                                     ),
                                     Expanded(
-                                      child: ListView.builder(
-                                        itemCount: garcomChamado.length,
-                                        itemBuilder: (context, index) {
-                                          return InkWell(
-                                            onTap: () {
-                                              respostaChamadoComanda = [];
-                                              respostaChamadoComanda
-                                                  .addAll(listMesas);
-                                              respostaChamadoComanda
-                                                  .retainWhere((element) =>
-                                                      element['numero'] ==
-                                                      garcomChamado[index]
-                                                          .toString());
-                                              print(respostaChamadoComanda[0]
-                                                  ['id']);
+                                      child: garcomChamado.length == 0
+                                          ? const Center(
+                                              child: Text(
+                                                'Sem mesas chamando',
+                                                style: TextStyle(fontSize: 17),
+                                              ),
+                                            )
+                                          : ListView.builder(
+                                              itemCount: garcomChamado.length,
+                                              itemBuilder: (context, index) {
+                                                return InkWell(
+                                                  onTap: () {
+                                                    respostaChamadoComanda = [];
+                                                    respostaChamadoComanda
+                                                        .addAll(listMesas);
+                                                    respostaChamadoComanda
+                                                        .retainWhere((element) =>
+                                                            element['numero'] ==
+                                                            garcomChamado[index]
+                                                                .toString());
+                                                    print(
+                                                        respostaChamadoComanda[
+                                                            0]['id']);
 
-                                              var texto =
-                                                  'Responder o chamado da mesa ${garcomChamado[index]}?';
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Expanded(
-                                                    child: AlertDialog(
-                                                      title: const Text(
-                                                        'Responder Chamado',
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .blueAccent),
-                                                      ),
-                                                      content: Text(texto),
-                                                      actions: [
-                                                        ElevatedButton(
-                                                          onPressed: () async {
-                                                            showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return const Center(
-                                                                      child:
-                                                                          CircularProgressIndicator(
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ));
-                                                                });
+                                                    var texto =
+                                                        'Responder o chamado da mesa ${garcomChamado[index]}?';
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return Expanded(
+                                                          child: AlertDialog(
+                                                            title: const Text(
+                                                              'Responder Chamado',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .blueAccent),
+                                                            ),
+                                                            content:
+                                                                Text(texto),
+                                                            actions: [
+                                                              ElevatedButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return const Center(
+                                                                            child:
+                                                                                CircularProgressIndicator(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ));
+                                                                      });
 
-                                                            await respondeChamado(
-                                                                respostaChamadoComanda[
-                                                                    0]['id'],
-                                                                respostaChamadoComanda[
-                                                                        0]
-                                                                    ['numero']);
-                                                            await updateRequest();
-                                                            setState(() {
-                                                              updateRequest();
-                                                            });
+                                                                  await respondeChamado(
+                                                                      respostaChamadoComanda[
+                                                                              0]
+                                                                          [
+                                                                          'id'],
+                                                                      respostaChamadoComanda[
+                                                                              0]
+                                                                          [
+                                                                          'numero']);
+                                                                  await updateRequest();
+                                                                  setState(() {
+                                                                    updateRequest();
+                                                                  });
 
-                                                            Navigator.pop(
-                                                                context);
+                                                                  Navigator.pop(
+                                                                      context);
 
-                                                            Navigator.pop(
-                                                                context);
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child:
-                                                              const Text('Ok'),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: ListTile(
-                                              leading:
-                                                  const Icon(Icons.table_bar),
-                                              trailing:
-                                                  const Icon(Icons.arrow_right),
-                                              title: Text(
-                                                  //garcomChamado.contains
-                                                  'Mesa ${garcomChamado[index]} '),
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        'Ok'),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: ListTile(
+                                                    leading: const Icon(
+                                                        Icons.table_bar),
+                                                    trailing: const Icon(
+                                                        Icons.arrow_right),
+                                                    title: Text(
+                                                        //garcomChamado.contains
+                                                        'Mesa ${garcomChamado[index]} '),
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          );
-                                        },
-                                      ),
                                     ),
                                   ],
                                 ),
@@ -337,82 +379,97 @@ class _FirstPageState extends State<FirstPage> {
                                   thickness: 1,
                                 ),
                                 Expanded(
-                                  child: ListView.builder(
-                                    itemCount: ind.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () async {
-                                          var texto =
-                                              'Deseja ocupar a mesa ${ind[index]['numero']} ?';
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Expanded(
-                                                child: AlertDialog(
-                                                  title: const Text(
-                                                    'Ocupar Mesa',
-                                                    style: TextStyle(
-                                                        color:
-                                                            Colors.blueAccent),
-                                                  ),
-                                                  content: Text(texto),
-                                                  actions: [
-                                                    ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: const Text(
-                                                            'Cancelar')),
-                                                    ElevatedButton(
-                                                      onPressed: () async {
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return const Center(
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .white,
-                                                              ));
-                                                            });
+                                  child: ind.length == 0
+                                      ? const Center(
+                                          child: Text(
+                                            'Todas as mesas estão ocupadas',
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        )
+                                      : ListView.builder(
+                                          itemCount: ind.length,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: () async {
+                                                var texto =
+                                                    'Deseja ocupar a mesa ${ind[index]['numero']} ?';
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Expanded(
+                                                      child: AlertDialog(
+                                                        title: const Text(
+                                                          'Ocupar Mesa',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .blueAccent),
+                                                        ),
+                                                        content: Text(texto),
+                                                        actions: [
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: const Text(
+                                                                  'Cancelar')),
+                                                          ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return const Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ));
+                                                                  });
 
-                                                        await updateVenda();
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (BuildContext
-                                                                            context) =>
-                                                                        HomePage(
-                                                                          nmrMesa:
-                                                                              ind[index]['numero'].toString(),
-                                                                          idmesa:
-                                                                              ind[index]['id'],
-                                                                        )));
-                                                      },
-                                                      child: const Text('Ok'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: ListTile(
-                                          leading: const Icon(Icons.table_bar),
-                                          trailing:
-                                              const Icon(Icons.arrow_right),
-                                          title: Text(
-                                              //garcomChamado.contains
-                                              'Mesa ${ind[index]['numero'].toString()} '),
+                                                              await updateVenda();
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (BuildContext
+                                                                              context) =>
+                                                                          HomePage(
+                                                                            nmrMesa:
+                                                                                ind[index]['numero'].toString(),
+                                                                            idmesa:
+                                                                                ind[index]['id'],
+                                                                          )));
+                                                            },
+                                                            child: const Text(
+                                                                'Ok'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: ListTile(
+                                                leading:
+                                                    const Icon(Icons.table_bar),
+                                                trailing: const Icon(
+                                                    Icons.arrow_right),
+                                                title: Text(
+                                                    //garcomChamado.contains
+                                                    'Mesa ${ind[index]['numero'].toString()} '),
+                                              ),
+                                            );
+                                          },
                                         ),
-                                      );
-                                    },
-                                  ),
                                 ),
                               ],
                             ),
@@ -536,6 +593,7 @@ class _FirstPageState extends State<FirstPage> {
                                 try {
                                   await updateVenda();
                                   await produtosReq();
+                                  metodoo = 'POST';
                                 } on SocketException catch (_) {
                                   semrede = true;
                                 }

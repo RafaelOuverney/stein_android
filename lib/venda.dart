@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
               child: IconButton(
                   onPressed: () {
                     if (listaProd.isEmpty) {
-                      print(listaProd);
                     } else {
                       Navigator.push(
                           context,

@@ -6,6 +6,8 @@ import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
+import 'tabs/confirmaComanda.dart';
+
 class Comandas extends StatefulWidget {
   var nummesa = '';
   var valorTotal = '';
@@ -33,7 +35,10 @@ class _ComandasState extends State<Comandas> {
             child: IconButton(
                 onPressed: () async {
                   await produtosReq();
+                  listaProd = [];
                   filter.addAll(produtosPerComanda);
+                  executado = false;
+                  metodoo = 'PUT';
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -41,7 +46,6 @@ class _ComandasState extends State<Comandas> {
                                 nmrMesa: widget.nummesa,
                                 idmesa: widget.idmesa,
                               )));
-                  print(listaProd);
                 },
                 icon: const Icon(Icons.add)),
           )
@@ -57,7 +61,7 @@ class _ComandasState extends State<Comandas> {
         itemBuilder: ((context, index) {
           return InkWell(
             onTap: (() {
-              var produto = int.parse(produtosPerComanda[index]['quantidade']);
+              var produto = produtosPerComanda[index]['quantidade'];
               var valor = double.parse(produtosPerComanda[index]['preco']);
               widget.total = produto * valor;
               showDialog(
@@ -86,7 +90,7 @@ class _ComandasState extends State<Comandas> {
             }),
             child: ListTile(
               trailing: Text(
-                  '${produtosPerComanda[index]['quantidade']} x R\$${produtosPerComanda[index]['preco'].toString().replaceAll('.', ',')}'),
+                  '${produtosPerComanda[index]['quantidade'].toString()} x R\$${produtosPerComanda[index]['preco'].toString().replaceAll('.', ',')}'),
               title: Text('${produtosPerComanda[index]['nome']}'),
             ),
           );

@@ -10,6 +10,7 @@ import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
 
 var comentario = '  ';
+var metodoo = '';
 
 class ConfirmaComanda extends StatefulWidget {
   var mesa = '';
@@ -49,7 +50,6 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
       floatingActionButton: FloatingActionButton.small(
         backgroundColor: Colors.green[700],
         onPressed: () async {
-          // fazPedido(listaProd, widget.idmesa, '2');
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -96,10 +96,8 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
                                 ));
                               });
                           try {
-                            await fazPedido(
-                              listaProd,
-                              widget.idmesa,
-                            ).timeout(Duration(seconds: 15));
+                            await fazPedido(listaProd, widget.idmesa, metodoo)
+                                .timeout(Duration(seconds: 15));
                           } on SocketException catch (_) {
                             return print('bão?');
                           }
@@ -162,7 +160,13 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
 somaValorTotal() {
   var valorTotalProd = 0.0;
   listaProd.forEach((element) {
-    valorTotalProd += double.parse(element['preco']) * element['quantidade'];
+    if (element['quantidade'] == '${element['quantidade']}') {
+      valorTotalProd +=
+          double.parse(element['preco']) * int.parse(element['quantidade']);
+    } else {
+      valorTotalProd +=
+          double.parse(element['preco']) * (element['quantidade']);
+    }
   });
   return valorTotalProd;
 }

@@ -9,6 +9,7 @@ List filter = [];
 var separador = '';
 
 var listaProd = [];
+var executado = false;
 
 class FirstTab extends StatefulWidget {
   var tipoProd = '';
@@ -30,17 +31,17 @@ class _FirstTabState extends State<FirstTab> {
       filter.retainWhere((element) => element['id'] == separador);
       filter.forEach((el1) {
         produtosPerComanda.forEach((el2) {
+          print(el1['quantidade'].runtimeType == int);
           if (el1['idProduto'] == el2['id']) {
             el1['quantidade'] = el2['quantidade'];
           }
         });
       });
-      if (produtosPerComanda.isNotEmpty) {
+      if (produtosPerComanda.isNotEmpty && !executado) {
         listaProd.addAll(produtosPerComanda);
+        executado = true;
       }
     });
-
-    print(filter);
 
     return Scaffold(
       body: SafeArea(
