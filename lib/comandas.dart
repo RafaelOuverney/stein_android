@@ -1,11 +1,9 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
 import 'package:stein/venda.dart';
-
 import 'tabs/confirmaComanda.dart';
 
 class Comandas extends StatefulWidget {

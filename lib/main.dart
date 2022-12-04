@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls, use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';

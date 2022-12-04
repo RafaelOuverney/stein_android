@@ -34,6 +34,7 @@ var produtosP = [];
 var funcID = '';
 var idCumanda = 0;
 var listaIdsProdutosPedidos = [];
+var observacao = '';
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -219,6 +220,7 @@ requisitaComandas() async {
 
 pedidosFeitosComandas(numMesa) async {
   idCumanda = 0;
+  observacao = '';
   final parametros = {'idMesa': '$numMesa'};
   var url =
       Uri.http(req.toString(), 'djangorestframeworkapi/Comanda/', parametros);
@@ -227,6 +229,9 @@ pedidosFeitosComandas(numMesa) async {
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
   var pedidoFComanda = json.decode(utf8.decode(response.bodyBytes)) as List;
+
+  // observacao = pedidoFComanda[0]['observacao'];
+  // print(observacao);
 
   idCumanda = pedidoFComanda[0]['id'];
   await pedidosFeitos();
@@ -307,5 +312,3 @@ Future fazPedido(produtos, idMesa, metodo) async {
     }),
   );
 }
-
-
