@@ -30,10 +30,10 @@ var funcaoFuncionario = '';
 var produtos = [];
 var comandas = [];
 var produtosPerComanda = [];
-var quantidadeProdutosPerComanda = 0;
 var produtosP = [];
 var funcID = '';
 var idCumanda = 0;
+var listaIdsProdutosPedidos = [];
 
 class Token extends StatefulWidget {
   const Token({super.key});
@@ -138,7 +138,6 @@ class HttpRequest extends State<RequisicaoHttp> {
           dadosUser[0]['primeiro_nome'] + ' ${dadosUser[0]['segundo_nome']}';
 
       funcID = dadosUser[0]['url'];
-      print(dadosUser);
 
       var funcFuncao = await requisitaFuncao(dadosUser[0]['funcao']);
       funcionarioFuncao = funcFuncao['nome'];
@@ -218,80 +217,53 @@ requisitaComandas() async {
   });
 }
 
-requisitaPedidos(nummesa) async {
-  produtos = [];
-  comandas = [];
-  final parametros = {'encerrada': "False", 'idMesa': nummesa};
-
+pedidosFeitosComandas(numMesa) async {
+  idCumanda = 0;
+  final parametros = {'idMesa': '$numMesa'};
   var url =
       Uri.http(req.toString(), 'djangorestframeworkapi/Comanda/', parametros);
+
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
-  var produtosList = json.decode(utf8.decode(response.bodyBytes)) as List;
-  produtosList.forEach((element) {
-    produtos.add(element['produtos']);
-    comandas.add(element['id']);
-  });
+  var pedidoFComanda = json.decode(utf8.decode(response.bodyBytes)) as List;
 
-  await produtosPorComanda();
+  idCumanda = pedidoFComanda[0]['id'];
+  await pedidosFeitos();
 }
+//  /\ esse chama esse \/
 
-produtosPorComanda() async {
-  var lista = [];
-  for (var p = 0; p < produtos[0].length; p++) {
-    var parametros = {'id': produtos[0][p].toString()};
-
-    var url = Uri.http(
-        req.toString(), 'djangorestframeworkapi/Produtos/', parametros);
-    var response =
-        await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
-
-    var produtosDetalhes = json.decode(utf8.decode(response.bodyBytes)) as List;
-    produtosDetalhes.forEach((element) {
-      var dict = {
-        'nome': '${element["nome"]}',
-        'preco': '${element["preco"]}',
-        'id': '${element['id']}',
-        'imagem': '${element['imagem']}',
-        'quantidade': 0
-      };
-      lista.add(dict);
-    });
-  }
-  await comandaProdutos(lista);
-}
-
-comandaProdutos(dadosProduto) async {
-  produtosPerComanda = [];
-  var parametros = {'comanda': comandas[0].toString()};
-  idCumanda = comandas[0];
-
+pedidosFeitos() async {
+  produtosPerComanda.clear();
+  listaIdsProdutosPedidos.clear();
+  final parametros = {'comanda': '$idCumanda'};
   var url = Uri.http(
       req.toString(), 'djangorestframeworkapi/ComandaProduto/', parametros);
+
   var response =
       await http.get(url, headers: {'Authorization': 'Token $tokenzinho'});
 
-  var quantidadeProdutos = json.decode(utf8.decode(response.bodyBytes)) as List;
-  var list = [];
-  quantidadeProdutos.forEach((element) {
-    var dict = {
-      'produto': '${element["produto"]}',
-      'quantidade': element['quantidade']
-    };
+  var pedidoF = json.decode(utf8.decode(response.bodyBytes)) as List;
 
-    list.add(dict);
-    // print(list);
-  });
-  for (var c = 0; c < dadosProduto.length; c++) {
-    for (var i = 0; i < list.length; i++) {
-      if (dadosProduto[c]['id'].toString() == list[i]['produto'].toString()) {
-        dadosProduto[c]['quantidade'] = list[i]['quantidade'];
+  pedidoF.forEach((element) {
+    for (var c = 0; c < produtosP.length; c++) {
+      var dici = {};
+      if (produtosP[c]['idProduto'].toString() ==
+          element['produto'].toString()) {
+        dici = {
+          'nome': '${produtosP[c]['nome']}',
+          'imagem': '${produtosP[c]['imagem']}',
+          'preco': '${produtosP[c]['preco']}',
+          'id': '${produtosP[c]['id']}',
+          'idProduto': '${element['produto']}',
+          'descrição': '${produtosP[c]['descricao']}',
+          'quantidade': element['quantidade']
+        };
+        produtosPerComanda.add(dici);
+        listaIdsProdutosPedidos.add(dici['idProduto']);
       }
     }
-  }
-  produtosPerComanda.addAll(dadosProduto);
-  quantidadeProdutosPerComanda = produtosPerComanda.length;
+  });
 }
 
 Future produtosReq() async {
@@ -317,9 +289,6 @@ Future produtosReq() async {
 
     produtosP.add(dici);
   });
-
-  filter.addAll(produtosP);
-  filter.retainWhere((element) => element['id'] == separador);
 }
 
 Future fazPedido(produtos, idMesa, metodo) async {
@@ -338,3 +307,5 @@ Future fazPedido(produtos, idMesa, metodo) async {
     }),
   );
 }
+
+

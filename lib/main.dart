@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stein/comandas.dart';
@@ -24,6 +25,9 @@ var respostaChamadoComanda = [];
 var abreMesaOcupada = [];
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const Myapp());
   RqState();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -51,6 +55,22 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  @override
+  void initState() {
+    _reload();
+
+    setState(() {
+      updateMesas();
+    });
+    super.initState();
+  }
+
+  _reload() async {
+    await updateMesas();
+    await Future.delayed(const Duration(seconds: 5));
+    initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +130,9 @@ class _FirstPageState extends State<FirstPage> {
                                         abreMesaOcupada.retainWhere((element) =>
                                             element['numero'] ==
                                             mesasOcup[index].toString());
-                                        await requisitaPedidos(
+                                        // await requisitaPedidos(
+                                        //     abreMesaOcupada[0]['id']);
+                                        await pedidosFeitosComandas(
                                             abreMesaOcupada[0]['id']);
                                         Navigator.push(
                                             context,
@@ -122,8 +144,7 @@ class _FirstPageState extends State<FirstPage> {
                                                             abreMesaOcupada[0]
                                                                 ['numero'],
                                                         valorTotal:
-                                                            abreMesaOcupada[0]
-                                                                ['valorTotal'],
+                                                            '${abreMesaOcupada[0]['valorTotal']}',
                                                         idmesa:
                                                             abreMesaOcupada[0]
                                                                 ['id'])));
@@ -251,9 +272,6 @@ class _FirstPageState extends State<FirstPage> {
                                                             element['numero'] ==
                                                             garcomChamado[index]
                                                                 .toString());
-                                                    print(
-                                                        respostaChamadoComanda[
-                                                            0]['id']);
 
                                                     var texto =
                                                         'Responder o chamado da mesa ${garcomChamado[index]}?';
@@ -391,72 +409,24 @@ class _FirstPageState extends State<FirstPage> {
                                           itemBuilder: (context, index) {
                                             return InkWell(
                                               onTap: () async {
-                                                var texto =
-                                                    'Deseja ocupar a mesa ${ind[index]['numero']} ?';
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return Expanded(
-                                                      child: AlertDialog(
-                                                        title: const Text(
-                                                          'Ocupar Mesa',
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .blueAccent),
-                                                        ),
-                                                        content: Text(texto),
-                                                        actions: [
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              child: const Text(
-                                                                  'Cancelar')),
-                                                          ElevatedButton(
-                                                            onPressed:
-                                                                () async {
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return const Center(
-                                                                        child:
-                                                                            CircularProgressIndicator(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ));
-                                                                  });
+                                                listaProd.clear();
+                                                listaIdsProdutosPedidos.clear();
+                                                await produtosReq();
 
-                                                              await updateVenda();
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (BuildContext
-                                                                              context) =>
-                                                                          HomePage(
-                                                                            nmrMesa:
-                                                                                ind[index]['numero'].toString(),
-                                                                            idmesa:
-                                                                                ind[index]['id'],
-                                                                          )));
-                                                            },
-                                                            child: const Text(
-                                                                'Ok'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            HomePage(
+                                                              nmrMesa: ind[
+                                                                          index]
+                                                                      ['numero']
+                                                                  .toString(),
+                                                              idmesa: ind[index]
+                                                                  ['id'],
+                                                            )));
                                               },
                                               child: ListTile(
                                                 leading:
@@ -482,359 +452,238 @@ class _FirstPageState extends State<FirstPage> {
                   ),
                 ],
               ),
-              MediaQuery.of(context).size.width < 500
-                  ? SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        Color? cor;
-                        var texto = '';
-                        if (mesasOcup.isNotEmpty) {
-                          for (var mesa in mesasOcup) {
-                            if (garcomChamado.contains(mesas[index])) {
-                              cor = const Color.fromARGB(255, 255, 196, 0);
-                              texto = 'Ocupada';
-                              break;
-                            }
-                            if (mesas[index] == mesa) {
-                              cor = const Color.fromARGB(255, 156, 5, 0);
-                              texto = 'Ocupada';
-                              break;
-                            } else {
-                              cor = const Color.fromARGB(255, 0, 102, 15);
-                            }
-                          }
-                        } else {
-                          cor = const Color.fromARGB(255, 0, 145, 22);
-                        }
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  Color? cor;
+                  var texto = '';
+                  if (mesasOcup.isNotEmpty) {
+                    for (var mesa in mesasOcup) {
+                      if (garcomChamado.contains(mesas[index])) {
+                        cor = const Color.fromARGB(255, 255, 196, 0);
+                        texto = 'Ocupada';
+                        break;
+                      }
+                      if (mesas[index] == mesa) {
+                        cor = const Color.fromARGB(255, 156, 5, 0);
+                        texto = 'Ocupada';
+                        break;
+                      } else {
+                        cor = const Color.fromARGB(255, 0, 102, 15);
+                      }
+                    }
+                  } else {
+                    cor = const Color.fromARGB(255, 0, 145, 22);
+                  }
 
-                        return Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: InkWell(
-                            onTap: (() async {
-                              if (cor ==
-                                      const Color.fromARGB(255, 255, 196, 0) ||
-                                  texto == 'ocupada') {
-                                textoChamado =
-                                    'Responder chamado da mesa ${mesas[index]}';
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Expanded(
-                                      child: AlertDialog(
-                                        title: const Text(
-                                          'Responder Chamado',
-                                          style: TextStyle(
-                                              color: Colors.blueAccent),
-                                        ),
-                                        content: Text(textoChamado),
-                                        actions: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Cancelar')),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              await respondeChamado(
-                                                  listMesas[index]['id'],
-                                                  mesas[index]);
-                                              await updateRequest();
-                                              return Future.delayed(
-                                                  const Duration(seconds: 1),
-                                                  () {
-                                                setState(() {
-                                                  updateRequest();
-                                                });
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            child: const Text('Ok'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else if (texto == 'Ocupada') {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return const Center(
-                                          child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ));
-                                    });
-                                produtosPerComanda = [];
-                                try {
-                                  await requisitaPedidos(listMesas[index]["id"])
-                                      .timeout(Duration(seconds: 5));
-                                  updateComanda();
-                                } on Exception catch (_) {
-                                  semrede = true;
-                                }
-                                if (semrede == true) {
-                                  Navigator.pop(context);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Expanded(
-                                        child: AlertDialog(
-                                          title: Text(
-                                            'Erro de conexão',
-                                            style: TextStyle(
-                                                color: Colors.red[800]),
-                                          ),
-                                          content: const Text(
-                                              'Verifique sua conexão com o servidor e tente novamente'),
-                                          actions: [
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                'Ok',
-                                                style: TextStyle(
-                                                    color: Colors.grey[800]),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Comandas(
-                                        idmesa: listMesas[index]['id'],
-                                        nummesa: listMesas[index]['numero']
-                                            .toString(),
-                                        valorTotal:
-                                            'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                      ),
-                                    ),
-                                  );
-                                }
-                              } else {
-                                produtosPerComanda = [];
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return const Center(
-                                          child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ));
-                                    });
-                                try {
-                                  await updateVenda()
-                                      .timeout(Duration(seconds: 5));
-                                  await produtosReq()
-                                      .timeout(Duration(seconds: 5));
-                                  metodoo = 'POST';
-                                } on Exception catch (_) {
-                                  semrede = true;
-                                }
-                                if (semrede == true) {
-                                  Navigator.pop(context);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Expanded(
-                                        child: AlertDialog(
-                                          title: Text(
-                                            'Erro de conexão',
-                                            style: TextStyle(
-                                                color: Colors.red[800]),
-                                          ),
-                                          content: const Text(
-                                              'Verifique sua conexão com o servidor e tente novamente'),
-                                          actions: [
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                'Ok',
-                                                style: TextStyle(
-                                                    color: Colors.grey[800]),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-
-                                  semrede = false;
-                                } else {
-                                  listaProd = [];
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              HomePage(
-                                                nmrMesa: listMesas[index]
-                                                        ['numero']
-                                                    .toString(),
-                                                idmesa: listMesas[index]['id'],
-                                              )));
-                                }
-                              }
-                            }),
-                            child: SizedBox(
-                              height: 125,
-                              child: Card(
-                                color: cor,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.table_bar),
-                                      trailing: const Icon(Icons.arrow_right),
-                                      title: Text(
-                                        'Mesa: ${listMesas[index]["numero"]}',
-                                        style: TextStyle(
-                                            color: cor ==
-                                                    const Color.fromARGB(
-                                                        255, 255, 196, 0)
-                                                ? Colors.black
-                                                : Colors.white),
-                                      ),
-                                      subtitle: cor ==
-                                              const Color.fromARGB(
-                                                  255, 0, 102, 15)
-                                          ? const Text('')
-                                          : Text(
-                                              'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                              style: TextStyle(
-                                                  color: cor ==
-                                                          const Color.fromARGB(
-                                                              255, 255, 196, 0)
-                                                      ? Colors.black
-                                                      : Colors.white),
-                                            ),
+                  return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: InkWell(
+                      onTap: (() async {
+                        if (cor == const Color.fromARGB(255, 255, 196, 0) ||
+                            texto == 'ocupada') {
+                          textoChamado =
+                              'Responder chamado da mesa ${mesas[index]}';
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Expanded(
+                                child: AlertDialog(
+                                  title: const Text(
+                                    'Responder Chamado',
+                                    style: TextStyle(color: Colors.blueAccent),
+                                  ),
+                                  content: Text(textoChamado),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancelar')),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        await respondeChamado(
+                                            listMesas[index]['id'],
+                                            mesas[index]);
+                                        await updateRequest();
+                                        return Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                          setState(() {
+                                            updateRequest();
+                                          });
+                                          Navigator.pop(context);
+                                        });
+                                      },
+                                      child: const Text('Ok'),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }, childCount: qtdMesas),
-                    )
-                  : SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 2.0,
-                        crossAxisCount:
-                            MediaQuery.of(context).size.width > 1000 ? 4 : 3,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        Color? cor;
-                        var texto = '';
-                        if (mesasOcup.isNotEmpty) {
-                          for (var mesa in mesasOcup) {
-                            if (garcomChamado.contains(mesas[index])) {
-                              cor = const Color.fromARGB(255, 255, 196, 0);
-                              texto = 'Ocupada';
-                              break;
-                            } else if (mesas[index] == mesa) {
-                              cor = const Color.fromARGB(255, 182, 6, 0);
-                              texto = 'Ocupada';
-                              break;
-                            } else {
-                              cor = const Color.fromARGB(255, 0, 102, 15);
-                            }
-                          }
-                        } else {
-                          cor = const Color.fromARGB(255, 0, 102, 15);
-                        }
-                        return InkWell(
-                          onTap: (() async {
-                            if (texto == 'Ocupada') {
-                              updateComanda();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => Comandas(
-                                    idmesa: listMesas[index]['id'],
-                                    nummesa: mesas[index].toString(),
-                                    valorTotal:
-                                        'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                  ),
-                                ),
                               );
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          HomePage(
-                                            nmrMesa: listMesas[index]['numero']
-                                                .toString(),
-                                            idmesa: listMesas[index]['id'],
-                                          )));
-                              await updateVenda();
-                            }
-                          }),
-                          child: OverflowBox(
-                            child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Card(
-                                  color: cor,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(
-                                          Icons.table_bar,
-                                        ),
-                                        trailing: Icon(Icons.arrow_right,
-                                            color: cor ==
-                                                    const Color.fromARGB(
-                                                        255, 255, 196, 0)
-                                                ? Colors.black
-                                                : Colors.white),
-                                        title: Text(
-                                          'Mesa ${mesas[index]}',
+                            },
+                          );
+                        } else if (texto == 'Ocupada') {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ));
+                              });
+
+                          try {
+                            await pedidosFeitosComandas(listMesas[index]['id'])
+                                .timeout(Duration(seconds: 10));
+                          } on Exception catch (_) {
+                            semrede = true;
+                          }
+                          if (semrede == true) {
+                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Expanded(
+                                  child: AlertDialog(
+                                    title: Text(
+                                      'Erro de conexão',
+                                      style: TextStyle(color: Colors.red[800]),
+                                    ),
+                                    content: const Text(
+                                        'Verifique sua conexão com o servidor e tente novamente'),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          'Ok',
                                           style: TextStyle(
-                                              color: cor ==
-                                                      const Color.fromARGB(
-                                                          255, 255, 196, 0)
-                                                  ? Colors.black
-                                                  : Colors.white),
+                                              color: Colors.grey[800]),
                                         ),
-                                        subtitle: cor ==
-                                                const Color.fromARGB(
-                                                    255, 0, 102, 15)
-                                            ? const Text('')
-                                            : Text(
-                                                'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
-                                                style: TextStyle(
-                                                    color: cor ==
-                                                            const Color
-                                                                    .fromARGB(
-                                                                255,
-                                                                255,
-                                                                196,
-                                                                0)
-                                                        ? Colors.black
-                                                        : Colors.white),
-                                              ),
-                                      )
+                                      ),
                                     ],
                                   ),
-                                )),
+                                );
+                              },
+                            );
+                          } else {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => Comandas(
+                                  idmesa: listMesas[index]['id'],
+                                  nummesa:
+                                      listMesas[index]['numero'].toString(),
+                                  valorTotal:
+                                      'R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                ),
+                              ),
+                            );
+                          }
+                        } else {
+                          produtosPerComanda = [];
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ));
+                              });
+                          try {
+                            await updateVenda().timeout(Duration(seconds: 5));
+                            await produtosReq().timeout(Duration(seconds: 5));
+                            metodoo = 'POST';
+                          } on Exception catch (_) {
+                            semrede = true;
+                          }
+                          if (semrede == true) {
+                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Expanded(
+                                  child: AlertDialog(
+                                    title: Text(
+                                      'Erro de conexão',
+                                      style: TextStyle(color: Colors.red[800]),
+                                    ),
+                                    content: const Text(
+                                        'Verifique sua conexão com o servidor e tente novamente'),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(
+                                              color: Colors.grey[800]),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+
+                            semrede = false;
+                          } else {
+                            listaProd = [];
+                            listaIdsProdutosPedidos.clear();
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) => HomePage(
+                                          nmrMesa: listMesas[index]['numero']
+                                              .toString(),
+                                          idmesa: listMesas[index]['id'],
+                                        )));
+                          }
+                        }
+                      }),
+                      child: SizedBox(
+                        height: 125,
+                        child: Card(
+                          color: cor,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.table_bar),
+                                trailing: const Icon(Icons.arrow_right),
+                                title: Text(
+                                  'Mesa: ${listMesas[index]["numero"]}',
+                                  style: TextStyle(
+                                      color: cor ==
+                                              const Color.fromARGB(
+                                                  255, 255, 196, 0)
+                                          ? Colors.black
+                                          : Colors.white),
+                                ),
+                                subtitle:
+                                    cor == const Color.fromARGB(255, 0, 102, 15)
+                                        ? const Text('')
+                                        : Text(
+                                            'Valor: R\$ ${listMesas[index]["valorTotal"].toString().replaceAll(".", ",")}',
+                                            style: TextStyle(
+                                                color: cor ==
+                                                        const Color.fromARGB(
+                                                            255, 255, 196, 0)
+                                                    ? Colors.black
+                                                    : Colors.white),
+                                          ),
+                              ),
+                            ],
                           ),
-                        );
-                      }, childCount: mesas.length),
+                        ),
+                      ),
                     ),
+                  );
+                }, childCount: qtdMesas),
+              )
             ],
           ),
         ));
@@ -844,6 +693,10 @@ class _FirstPageState extends State<FirstPage> {
 Future<void> updateRequest() async {
   await HttpRequest().reqHTTP('Mesa/');
   await HttpRequest().reqHTTP('TiposDeProduto/');
+}
+
+Future<void> updateMesas() async {
+  await HttpRequest().reqHTTP('Mesa/');
 }
 
 Future<void> updateVenda() async {

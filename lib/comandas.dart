@@ -57,7 +57,7 @@ class _ComandasState extends State<Comandas> {
         ),
       ),
       body: ListView.builder(
-        itemCount: quantidadeProdutosPerComanda,
+        itemCount: produtosPerComanda.length,
         itemBuilder: ((context, index) {
           return InkWell(
             onTap: (() {

@@ -14,7 +14,6 @@ var metodoo = '';
 
 class ConfirmaComanda extends StatefulWidget {
   var mesa = '';
-  var dici = [];
   var idmesa = '';
 
   ConfirmaComanda({super.key, required this.mesa, required this.idmesa});
@@ -99,7 +98,7 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
                             await fazPedido(listaProd, widget.idmesa, metodoo)
                                 .timeout(Duration(seconds: 15));
                           } on SocketException catch (_) {
-                            return print('bão?');
+                            
                           }
 
                           await updateRequest();

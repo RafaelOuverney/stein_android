@@ -29,17 +29,14 @@ class _FirstTabState extends State<FirstTab> {
       filter = [];
       filter.addAll(produtosP);
       filter.retainWhere((element) => element['id'] == separador);
-      filter.forEach((el1) {
-        produtosPerComanda.forEach((el2) {
-          print(el1['quantidade'].runtimeType == int);
-          if (el1['idProduto'] == el2['id']) {
-            el1['quantidade'] = el2['quantidade'];
+      listaProd = produtosPerComanda;
+
+      for (var c = 0; c < filter.length; c++) {
+        for (var i = 0; i < listaIdsProdutosPedidos.length; i++) {
+          if (filter[c]['idProduto'] == listaIdsProdutosPedidos[i]) {
+            filter[c]['quantidade'] = produtosPerComanda[i]['quantidade'];
           }
-        });
-      });
-      if (produtosPerComanda.isNotEmpty && !executado) {
-        listaProd.addAll(produtosPerComanda);
-        executado = true;
+        }
       }
     });
 
@@ -102,22 +99,25 @@ class _FirstTabState extends State<FirstTab> {
                     children: [
                       InkWell(
                         onTap: (() {
-                          setState(() {
-                            filter[index]['quantidade']--;
-                            if (filter[index]['quantidade'] <= 0) {
-                              filter[index]['quantidade'] = 0;
-                              listaProd.remove(filter[index]);
-                            } else {}
-                          });
+                          var indexListaIDS = listaIdsProdutosPedidos
+                              .indexOf(filter[index]['idProduto']);
+                          if (listaIdsProdutosPedidos
+                              .contains(filter[index]['idProduto'])) {
+                            produtosPerComanda[indexListaIDS]['quantidade']--;
+                            if (produtosPerComanda[indexListaIDS]
+                                    ['quantidade'] <=
+                                0) {
+                              produtosPerComanda[indexListaIDS]['quantidade'] =
+                                  0;
+                            }
+                          }
+                          setState(() {});
                         }),
                         onLongPress: (() {
-                          setState(() {
-                            filter[index]['quantidade'] -= 10;
-                            if (filter[index]['quantidade'] < 0) {
-                              filter[index]['quantidade'] = 0;
-                              listaProd.remove(filter[index]);
-                            }
-                          });
+                          var indexListaIDS = listaIdsProdutosPedidos
+                              .indexOf(filter[index]['idProduto']);
+
+                          setState(() {});
                         }),
                         child: const Icon(
                           CupertinoIcons.minus,
@@ -130,26 +130,30 @@ class _FirstTabState extends State<FirstTab> {
                       ),
                       InkWell(
                         onTap: () {
-                          setState(() {
+                          var indexListaIDS = listaIdsProdutosPedidos
+                              .indexOf(filter[index]['idProduto']);
+                          if (indexListaIDS == -1) {
                             filter[index]['quantidade']++;
-                            if (filter[index]['quantidade'] > 100) {
-                              filter[index]['quantidade'] = 100;
-                            } else {
-                              if (!listaProd.contains(filter[index])) {
-                                listaProd.add(filter[index]);
-                              }
-                            }
-                          });
+                            produtosPerComanda.add(filter[index]);
+                            listaIdsProdutosPedidos
+                                .add(filter[index]['idProduto']);
+                          } else {
+                            produtosPerComanda[indexListaIDS]['quantidade']++;
+                          }
+                          setState(() {});
                         },
                         onLongPress: (() {
                           setState(() {
-                            filter[index]['quantidade'] += 10;
-                            if (filter[index]['quantidade'] > 100) {
-                              filter[index]['quantidade'] = 100;
+                            var indexListaIDS = listaIdsProdutosPedidos
+                                .indexOf(filter[index]['idProduto']);
+                            if (indexListaIDS == -1) {
+                              filter[index]['quantidade'] += 10;
+                              produtosPerComanda.add(filter[index]);
+                              listaIdsProdutosPedidos
+                                  .add(filter[index]['idProduto']);
                             } else {
-                              if (!listaProd.contains(filter[index])) {
-                                listaProd.add(filter[index]);
-                              }
+                              produtosPerComanda[indexListaIDS]['quantidade'] +=
+                                  10;
                             }
                           });
                         }),
