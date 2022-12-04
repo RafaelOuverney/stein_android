@@ -1,13 +1,12 @@
+// ignore_for_file: file_names, must_be_immutable, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
 import 'package:stein/requisicao.dart';
 import 'package:stein/tabs/first_page.dart';
-
-import 'package:stein/venda.dart';
 
 var comentario = '  ';
 var metodoo = '';
@@ -52,79 +51,84 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return Expanded(
-                child: AlertDialog(
-                  title: const Text(
-                    'Alguma Observação?',
-                    style: TextStyle(color: Colors.blueAccent),
-                  ),
-                  content: Form(
-                    key: formkey,
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty || value == null) {
-                          comentario = 'null';
-                        }
-
-                        comentario = value;
-                      },
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      minLines: null,
-                    ),
-                  ),
-                  actions: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Voltar',
-                        style: TextStyle(color: Colors.grey[800]),
+              return Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: AlertDialog(
+                      title: const Text(
+                        'Alguma Observação?',
+                        style: TextStyle(color: Colors.blueAccent),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (formkey.currentState!.validate()) {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const Center(
-                                    child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ));
+                      content: Form(
+                        key: formkey,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              comentario = 'null';
+                            }
+
+                            comentario = value;
+                            return null;
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          minLines: null,
+                        ),
+                      ),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Voltar',
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (formkey.currentState!.validate()) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return const Center(
+                                        child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ));
+                                  });
+                              try {
+                                await fazPedido(
+                                        listaProd, widget.idmesa, metodoo)
+                                    .timeout(const Duration(seconds: 15));
+                              } on SocketException catch (_) {}
+
+                              await updateRequest();
+                              Navigator.pop(context);
+
+                              setState(() {
+                                updateRequest();
                               });
-                          try {
-                            await fazPedido(listaProd, widget.idmesa, metodoo)
-                                .timeout(Duration(seconds: 15));
-                          } on SocketException catch (_) {
-                            
-                          }
 
-                          await updateRequest();
-                          Navigator.pop(context);
-
-                          setState(() {
-                            updateRequest();
-                          });
-
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const FirstPage(),
-                            ),
-                            (route) => false,
-                          );
-                        }
-                      },
-                      child: Text(
-                        'Finalizar',
-                        style: TextStyle(color: Colors.grey[800]),
-                      ),
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const FirstPage(),
+                                ),
+                                (route) => false,
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Finalizar',
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           );
@@ -158,7 +162,7 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
 
 somaValorTotal() {
   var valorTotalProd = 0.0;
-  listaProd.forEach((element) {
+  for (var element in listaProd) {
     if (element['quantidade'] == '${element['quantidade']}') {
       valorTotalProd +=
           double.parse(element['preco']) * int.parse(element['quantidade']);
@@ -166,6 +170,6 @@ somaValorTotal() {
       valorTotalProd +=
           double.parse(element['preco']) * (element['quantidade']);
     }
-  });
+  }
   return valorTotalProd;
 }

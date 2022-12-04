@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/requisicao.dart';
@@ -65,23 +65,28 @@ class _ComandasState extends State<Comandas> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return Expanded(
-                    child: AlertDialog(
-                      title: Text(
-                        '${produtosPerComanda[index]['nome']}',
-                        style: const TextStyle(color: Colors.blueAccent),
-                      ),
-                      content: Text(
-                          'Valor total dos produtos: R\$ ${widget.total.toStringAsFixed(2).replaceAll('.', ',')} '),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Ok'),
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: AlertDialog(
+                          title: Text(
+                            '${produtosPerComanda[index]['nome']}',
+                            style: const TextStyle(color: Colors.blueAccent),
+                          ),
+                          content: Text(
+                              'Valor total dos produtos: R\$ ${widget.total.toStringAsFixed(2).replaceAll('.', ',')} '),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Ok'),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 },
               );

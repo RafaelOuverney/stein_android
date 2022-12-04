@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously, body_might_complete_normally_nullable
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stein/main.dart';
@@ -31,37 +29,42 @@ class Login extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () {
-                    showDialog(
+                    showDialog<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return Expanded(
-                          child: AlertDialog(
-                            title: const Text(
-                              'Alerta',
-                              style: TextStyle(color: Colors.red),
+                        return Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: AlertDialog(
+                                title: const Text(
+                                  'Alerta',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                content: const Text(
+                                    'Essa é uma janela de configuração de conexão com o servidor, alterações podem ocasionar no não funcionamento da aplicação.'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('CANCELAR'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const Rq()));
+                                    },
+                                    child: const Text('PROSSEGUIR'),
+                                  ),
+                                ],
+                              ),
                             ),
-                            content: const Text(
-                                'Essa é uma janela de configuração de conexão com o servidor, alterações podem ocasionar no não funcionamento da aplicação.'),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('CANCELAR'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              const Rq()));
-                                },
-                                child: const Text('PROSSEGUIR'),
-                              ),
-                            ],
-                          ),
+                          ],
                         );
                       },
                     );
@@ -222,37 +225,46 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                             try {
                               await chamaToken(nominho, senhinha)
-                                  .timeout(Duration(seconds: 5));
+                                  .timeout(const Duration(seconds: 5));
                             } on Exception catch (_) {
                               semrede = true;
                             }
                             if (semrede == true) {
+                              semrede = false;
                               Navigator.pop(context);
-                              showDialog(
+                              showDialog<void>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Expanded(
-                                    child: AlertDialog(
-                                      title: Text(
-                                        'Erro de conexão',
-                                        style:
-                                            TextStyle(color: Colors.red[800]),
-                                      ),
-                                      content: const Text(
-                                          'Verifique sua conexão com o servidor e tente novamente'),
-                                      actions: [
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Ok',
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: AlertDialog(
+                                          title: Text(
+                                            'Erro de conexão',
                                             style: TextStyle(
-                                                color: Colors.grey[800]),
+                                                color: Colors.red[800]),
                                           ),
+                                          content: const Text(
+                                              'Verifique sua conexão com o servidor e tente novamente'),
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Ok',
+                                                style: TextStyle(
+                                                    color: Colors.grey[800]),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   );
                                 },
                               );
@@ -277,10 +289,12 @@ class _LoginPageState extends State<LoginPage> {
                                 );
                               } else {
                                 Navigator.pop(context);
-                                showDialog(
+
+                                showDialog<void>(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return Expanded(
+                                      flex: 1,
                                       child: AlertDialog(
                                         title: const Text(
                                           'Erro',

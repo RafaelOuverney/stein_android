@@ -51,28 +51,33 @@ class _FirstTabState extends State<FirstTab> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return Expanded(
-                      child: AlertDialog(
-                        title: const Text(
-                          'Detalhes do produto',
-                          style: TextStyle(color: Colors.blueAccent),
-                        ),
-                        content: ListTile(
-                          title: Text(filter[index]['descrição'] == 'null'
-                              ? 'Sem Descrição'
-                              : '${filter[index]['descrição']}'),
-                          subtitle:
-                              Text('Preço: R\$ ${filter[index]['preco']}'),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Ok'),
+                    return Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: AlertDialog(
+                            title: const Text(
+                              'Detalhes do produto',
+                              style: TextStyle(color: Colors.blueAccent),
+                            ),
+                            content: ListTile(
+                              title: Text(filter[index]['descrição'] == 'null'
+                                  ? 'Sem Descrição'
+                                  : '${filter[index]['descrição']}'),
+                              subtitle:
+                                  Text('Preço: R\$ ${filter[index]['preco']}'),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Ok'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   },
                 );

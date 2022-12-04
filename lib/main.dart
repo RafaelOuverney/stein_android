@@ -251,7 +251,7 @@ class _FirstPageState extends State<FirstPage> {
                                       thickness: 1.5,
                                     ),
                                     Expanded(
-                                      child: garcomChamado.length == 0
+                                      child: garcomChamado.isEmpty
                                           ? const Center(
                                               child: Text(
                                                 'Sem mesas chamando',
@@ -278,61 +278,65 @@ class _FirstPageState extends State<FirstPage> {
                                                       context: context,
                                                       builder: (BuildContext
                                                           context) {
-                                                        return Expanded(
-                                                          child: AlertDialog(
-                                                            title: const Text(
-                                                              'Responder Chamado',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .blueAccent),
-                                                            ),
-                                                            content:
-                                                                Text(texto),
-                                                            actions: [
-                                                              ElevatedButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) {
-                                                                        return const Center(
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                          color:
-                                                                              Colors.white,
-                                                                        ));
+                                                        return Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 1,
+                                                              child:
+                                                                  AlertDialog(
+                                                                title:
+                                                                    const Text(
+                                                                  'Responder Chamado',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .blueAccent),
+                                                                ),
+                                                                content:
+                                                                    Text(texto),
+                                                                actions: [
+                                                                  ElevatedButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (context) {
+                                                                            return const Center(
+                                                                                child: CircularProgressIndicator(
+                                                                              color: Colors.white,
+                                                                            ));
+                                                                          });
+
+                                                                      await respondeChamado(
+                                                                          respostaChamadoComanda[0]
+                                                                              [
+                                                                              'id'],
+                                                                          respostaChamadoComanda[0]
+                                                                              [
+                                                                              'numero']);
+                                                                      await updateRequest();
+                                                                      setState(
+                                                                          () {
+                                                                        updateRequest();
                                                                       });
 
-                                                                  await respondeChamado(
-                                                                      respostaChamadoComanda[
-                                                                              0]
-                                                                          [
-                                                                          'id'],
-                                                                      respostaChamadoComanda[
-                                                                              0]
-                                                                          [
-                                                                          'numero']);
-                                                                  await updateRequest();
-                                                                  setState(() {
-                                                                    updateRequest();
-                                                                  });
+                                                                      Navigator.pop(
+                                                                          context);
 
-                                                                  Navigator.pop(
-                                                                      context);
-
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                        'Ok'),
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child:
+                                                                        const Text(
+                                                                            'Ok'),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ],
-                                                          ),
+                                                            ),
+                                                          ],
                                                         );
                                                       },
                                                     );
@@ -396,7 +400,7 @@ class _FirstPageState extends State<FirstPage> {
                                   thickness: 1,
                                 ),
                                 Expanded(
-                                  child: ind.length == 0
+                                  child: ind.isEmpty
                                       ? const Center(
                                           child: Text(
                                             'Todas as mesas estão ocupadas',
@@ -486,37 +490,43 @@ class _FirstPageState extends State<FirstPage> {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return Expanded(
-                                child: AlertDialog(
-                                  title: const Text(
-                                    'Responder Chamado',
-                                    style: TextStyle(color: Colors.blueAccent),
-                                  ),
-                                  content: Text(textoChamado),
-                                  actions: [
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancelar')),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await respondeChamado(
-                                            listMesas[index]['id'],
-                                            mesas[index]);
-                                        await updateRequest();
-                                        return Future.delayed(
-                                            const Duration(seconds: 1), () {
-                                          setState(() {
-                                            updateRequest();
-                                          });
-                                          Navigator.pop(context);
-                                        });
-                                      },
-                                      child: const Text('Ok'),
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: AlertDialog(
+                                      title: const Text(
+                                        'Responder Chamado',
+                                        style:
+                                            TextStyle(color: Colors.blueAccent),
+                                      ),
+                                      content: Text(textoChamado),
+                                      actions: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancelar')),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            await respondeChamado(
+                                                listMesas[index]['id'],
+                                                mesas[index]);
+                                            await updateRequest();
+                                            return Future.delayed(
+                                                const Duration(seconds: 1), () {
+                                              setState(() {
+                                                updateRequest();
+                                              });
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          child: const Text('Ok'),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               );
                             },
                           );
@@ -532,7 +542,7 @@ class _FirstPageState extends State<FirstPage> {
 
                           try {
                             await pedidosFeitosComandas(listMesas[index]['id'])
-                                .timeout(Duration(seconds: 10));
+                                .timeout(const Duration(seconds: 10));
                           } on Exception catch (_) {
                             semrede = true;
                           }
@@ -541,27 +551,33 @@ class _FirstPageState extends State<FirstPage> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return Expanded(
-                                  child: AlertDialog(
-                                    title: Text(
-                                      'Erro de conexão',
-                                      style: TextStyle(color: Colors.red[800]),
-                                    ),
-                                    content: const Text(
-                                        'Verifique sua conexão com o servidor e tente novamente'),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          'Ok',
-                                          style: TextStyle(
-                                              color: Colors.grey[800]),
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: AlertDialog(
+                                        title: Text(
+                                          'Erro de conexão',
+                                          style:
+                                              TextStyle(color: Colors.red[800]),
                                         ),
+                                        content: const Text(
+                                            'Verifique sua conexão com o servidor e tente novamente'),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'Ok',
+                                              style: TextStyle(
+                                                  color: Colors.grey[800]),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 );
                               },
                             );
@@ -591,8 +607,10 @@ class _FirstPageState extends State<FirstPage> {
                                 ));
                               });
                           try {
-                            await updateVenda().timeout(Duration(seconds: 5));
-                            await produtosReq().timeout(Duration(seconds: 5));
+                            await updateVenda()
+                                .timeout(const Duration(seconds: 5));
+                            await produtosReq()
+                                .timeout(const Duration(seconds: 5));
                             metodoo = 'POST';
                           } on Exception catch (_) {
                             semrede = true;
@@ -602,27 +620,33 @@ class _FirstPageState extends State<FirstPage> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return Expanded(
-                                  child: AlertDialog(
-                                    title: Text(
-                                      'Erro de conexão',
-                                      style: TextStyle(color: Colors.red[800]),
-                                    ),
-                                    content: const Text(
-                                        'Verifique sua conexão com o servidor e tente novamente'),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          'Ok',
-                                          style: TextStyle(
-                                              color: Colors.grey[800]),
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: AlertDialog(
+                                        title: Text(
+                                          'Erro de conexão',
+                                          style:
+                                              TextStyle(color: Colors.red[800]),
                                         ),
+                                        content: const Text(
+                                            'Verifique sua conexão com o servidor e tente novamente'),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'Ok',
+                                              style: TextStyle(
+                                                  color: Colors.grey[800]),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 );
                               },
                             );
