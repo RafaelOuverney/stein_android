@@ -416,21 +416,22 @@ class _FirstPageState extends State<FirstPage> {
                                                 listaProd.clear();
                                                 listaIdsProdutosPedidos.clear();
                                                 await produtosReq();
+                                                metodoo = 'POST';
 
                                                 Navigator.pop(context);
                                                 Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            HomePage(
-                                                              nmrMesa: ind[
-                                                                          index]
-                                                                      ['numero']
-                                                                  .toString(),
-                                                              idmesa: ind[index]
-                                                                  ['id'],
-                                                            )));
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        HomePage(
+                                                      nmrMesa: ind[index]
+                                                              ['numero']
+                                                          .toString(),
+                                                      idmesa: ind[index]['id'],
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                               child: ListTile(
                                                 leading:
