@@ -143,7 +143,7 @@ class _FirstPageState extends State<FirstPage> {
                                                             abreMesaOcupada[0]
                                                                 ['numero'],
                                                         valorTotal:
-                                                            '${abreMesaOcupada[0]['valorTotal']}',
+                                                            'R\$ ${abreMesaOcupada[0]['valorTotal']}',
                                                         idmesa:
                                                             abreMesaOcupada[0]
                                                                 ['id'])));
@@ -412,6 +412,7 @@ class _FirstPageState extends State<FirstPage> {
                                           itemBuilder: (context, index) {
                                             return InkWell(
                                               onTap: () async {
+                                                produtosPerComanda.clear();
                                                 listaProd.clear();
                                                 listaIdsProdutosPedidos.clear();
                                                 await produtosReq();

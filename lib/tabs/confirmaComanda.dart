@@ -101,7 +101,9 @@ class _ConfirmaComandaState extends State<ConfirmaComanda> {
                                 await fazPedido(
                                         listaProd, widget.idmesa, metodoo)
                                     .timeout(const Duration(seconds: 15));
-                              } on SocketException catch (_) {}
+                              } on SocketException catch (_) {
+                                print('object');
+                              }
 
                               await updateRequest();
                               Navigator.pop(context);

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
+import 'package:stein/tabs/confirmaComanda.dart';
 import 'package:stein/tabs/first_page.dart';
 
 import 'main.dart';
@@ -297,4 +298,19 @@ Future produtosReq() async {
 }
 
 Future fazPedido(produtos, idMesa, metodo) async {
+  print('object');
+  http.Response resposta = await http.post(
+    Uri.http(req.toString(), '/djangorestframeworkapi/Comanda/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenzinho'
+    },
+    body: jsonEncode({
+      'metodo': '$metodo',
+      'idMesa': '$idMesa',
+      'idFuncionario': funcID,
+      'produtos': produtos,
+      'observacao': comentario
+    }),
+  );
 }
